@@ -37,10 +37,30 @@
           src = self;
           gcc-arm-embedded-7 = nixpkgsOld.legacyPackages.${system}.gcc-arm-embedded-7;
         };
+        qt5 = pkgs.libsForQt5;
       in
       {
         packages = selfPkgs // {
           default = selfPkgs.vesc-tool;
+        };
+
+        # Окружение для запуска VESC Tool: nix develop
+        devShells.default = pkgs.mkShell {
+          inputsFrom = [ selfPkgs.vesc-tool ];
+          packages = [ qt5.qtgraphicaleffects ];
+          shellHook = ''
+            export QML2_IMPORT_PATH="${
+              pkgs.lib.makeSearchPath qt5.qtbase.qtQmlPrefix (
+                map pkgs.lib.getBin [
+                  qt5.qtdeclarative
+                  qt5.qtquickcontrols
+                  qt5.qtquickcontrols2
+                  qt5.qtgraphicaleffects
+                ]
+              )
+            }"
+            export QT_QPA_PLATFORM_PLUGIN_PATH="${pkgs.lib.getBin qt5.qtbase}/${qt5.qtbase.qtPluginPrefix}/platforms"
+          '';
         };
 
         # For `nix fmt`
