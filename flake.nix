@@ -60,6 +60,7 @@
               )
             }"
             export QT_QPA_PLATFORM_PLUGIN_PATH="${pkgs.lib.getBin qt5.qtbase}/${qt5.qtbase.qtPluginPrefix}/platforms"
+            export QT_PLUGIN_PATH="${pkgs.lib.getBin qt5.qtbase}/${qt5.qtbase.qtPluginPrefix}"
           '';
         };
 
