@@ -1683,6 +1683,11 @@ void MainWindow::reloadPages()
     ui->pageWidget->addWidget(mPageDisplayTool);
     addPageItem(tr("Display Tool"),  theme + "icons/Calculator-96.png", "", false, true);
 
+    mPageControllerSetup = new PageControllerSetup(this);
+    mPageControllerSetup->setVesc(mVesc);
+    ui->pageWidget->addWidget(mPageControllerSetup);
+    addPageItem(tr("Controller Setup"), theme + "icons/Horizontal Settings Mixer-96.png", "", true);
+
     mPageDebugPrint = new PageDebugPrint(this);
     ui->pageWidget->addWidget(mPageDebugPrint);
     addPageItem(tr("Debug Console"),  theme + "icons/Bug-96.png", "", false, true);

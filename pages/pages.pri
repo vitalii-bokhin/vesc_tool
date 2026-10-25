@@ -37,7 +37,8 @@ FORMS += \
     $$PWD/pageimu.ui \
     $$PWD/pageswdprog.ui \
     $$PWD/pageappimu.ui \
-    $$PWD/pageloganalysis.ui
+    $$PWD/pageloganalysis.ui \
+    $$PWD/pagecontrollersetup.ui
 
 HEADERS += \
     $$PWD/pageapppas.h \
@@ -78,7 +79,8 @@ HEADERS += \
     $$PWD/pageimu.h \
     $$PWD/pageswdprog.h \
     $$PWD/pageappimu.h \
-    $$PWD/pageloganalysis.h
+    $$PWD/pageloganalysis.h \
+    $$PWD/pagecontrollersetup.h
 
 SOURCES += \
     $$PWD/pageapppas.cpp \
@@ -119,4 +121,5 @@ SOURCES += \
     $$PWD/pageimu.cpp \
     $$PWD/pageswdprog.cpp \
     $$PWD/pageappimu.cpp \
-    $$PWD/pageloganalysis.cpp
+    $$PWD/pageloganalysis.cpp \
+    $$PWD/pagecontrollersetup.cpp
