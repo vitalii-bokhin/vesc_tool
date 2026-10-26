@@ -39,6 +39,7 @@ public:
     void setVesc(VescInterface *vesc);
     bool allValuesOk() const;
     bool lastOkValuesApplied() const;
+    void setHideApplyButton(bool hide);
 
 private slots:
     void motorRLReceived(double r, double l, double ld_lq_diff);
@@ -54,6 +55,7 @@ private slots:
     void on_calcGainButton_clicked();
     void on_calcApplyLocalButton_clicked();
     void on_encApplyButton_clicked();
+    void on_writeConfigButton_clicked();
 
 private:
     Ui::DetectFoc *ui;

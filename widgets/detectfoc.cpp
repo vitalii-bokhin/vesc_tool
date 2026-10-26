@@ -49,6 +49,9 @@ DetectFoc::DetectFoc(QWidget *parent) :
     mRunning = false;
     mTempMotorLast = -100.0;
     mEncoderValuesOk = false;
+    if (ui->writeConfigButton) {
+        ui->writeConfigButton->setVisible(false);
+    }
     updateColors();
 }
 
@@ -303,6 +306,19 @@ void DetectFoc::on_applyAllButton_clicked()
     }
 }
 
+void DetectFoc::on_writeConfigButton_clicked()
+{
+    if (!mVesc) {
+        return;
+    }
+
+    on_applyAllButton_clicked();
+
+    if (mLastOkValuesApplied && mVesc->isPortConnected()) {
+        mVesc->commands()->setMcconf();
+    }
+}
+
 bool DetectFoc::lastOkValuesApplied() const
 {
     return mLastOkValuesApplied;
@@ -311,6 +327,16 @@ bool DetectFoc::lastOkValuesApplied() const
 bool DetectFoc::allValuesOk() const
 {
     return mAllValuesOk;
+}
+
+void DetectFoc::setHideApplyButton(bool hide)
+{
+    if (ui->applyAllButton) {
+        ui->applyAllButton->setVisible(!hide);
+    }
+    if (ui->writeConfigButton) {
+        ui->writeConfigButton->setVisible(hide);
+    }
 }
 
 void DetectFoc::updateColors()

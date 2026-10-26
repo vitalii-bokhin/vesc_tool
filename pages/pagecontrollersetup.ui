@@ -49,7 +49,7 @@
          <item>
           <widget class="QPushButton" name="loadMotorConfButton">
            <property name="text">
-            <string>Load &amp; Write Motor Configuration</string>
+            <string>Set Motor Config</string>
            </property>
            <property name="icon">
             <iconset resource="../res.qrc">
@@ -60,7 +60,7 @@
          <item>
           <widget class="QPushButton" name="loadAppConfButton">
            <property name="text">
-            <string>Load &amp; Write App Configuration</string>
+            <string>Set App Config</string>
            </property>
            <property name="icon">
             <iconset resource="../res.qrc">
@@ -84,6 +84,39 @@
         </layout>
        </item>
        <item>
+        <widget class="QLabel" name="labelFocGeneral">
+         <property name="text">
+          <string>FOC Motor Configuration</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+        </widget>
+       </item>
+        <item>
+         <widget class="ParamTable" name="generalTab">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>1</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>280</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       <item>
+        <widget class="DetectFoc" name="detectFoc" native="true"/>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -102,6 +135,19 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ParamTable</class>
+   <extends>QTableWidget</extends>
+   <header>widgets/paramtable.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DetectFoc</class>
+   <extends>QWidget</extends>
+   <header>widgets/detectfoc.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../res.qrc"/>
  </resources>

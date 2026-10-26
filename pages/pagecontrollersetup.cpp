@@ -45,6 +45,22 @@ VescInterface *PageControllerSetup::vesc() const
 void PageControllerSetup::setVesc(VescInterface *vesc)
 {
     mVesc = vesc;
+
+    if (mVesc) {
+        ui->detectFoc->setVesc(mVesc);
+        if (ui->detectFoc) {
+            ui->detectFoc->setHideApplyButton(true);
+        }
+        reloadParams();
+    }
+}
+
+void PageControllerSetup::reloadParams()
+{
+    if (mVesc) {
+        ui->generalTab->clearParams();
+        ui->generalTab->addParamSubgroup(mVesc->mcConfig(), "foc", "general");
+    }
 }
 
 void PageControllerSetup::on_loadMotorConfButton_clicked()
