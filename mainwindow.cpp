@@ -1455,6 +1455,11 @@ void MainWindow::reloadPages()
     ui->pageWidget->addWidget(mPagePackage);
     addPageItem(tr("VESC Packages"),  theme + "icons/Package-96.png", "", true);
 
+    mPageControllerSetup = new PageControllerSetup(this);
+    mPageControllerSetup->setVesc(mVesc);
+    ui->pageWidget->addWidget(mPageControllerSetup);
+    addPageItem(tr("Controller Setup"), theme + "icons/Horizontal Settings Mixer-96.png", "", true);
+
     mPageMotorSettings = new PageMotorSettings(this);
     mPageMotorSettings->setVesc(mVesc);
     ui->pageWidget->addWidget(mPageMotorSettings);
@@ -1682,11 +1687,6 @@ void MainWindow::reloadPages()
     mPageDisplayTool = new PageDisplayTool(this);
     ui->pageWidget->addWidget(mPageDisplayTool);
     addPageItem(tr("Display Tool"),  theme + "icons/Calculator-96.png", "", false, true);
-
-    mPageControllerSetup = new PageControllerSetup(this);
-    mPageControllerSetup->setVesc(mVesc);
-    ui->pageWidget->addWidget(mPageControllerSetup);
-    addPageItem(tr("Controller Setup"), theme + "icons/Horizontal Settings Mixer-96.png", "", true);
 
     mPageDebugPrint = new PageDebugPrint(this);
     ui->pageWidget->addWidget(mPageDebugPrint);

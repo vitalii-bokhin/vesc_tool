@@ -19,6 +19,9 @@
 
 #include "pagecontrollersetup.h"
 #include "ui_pagecontrollersetup.h"
+#include <QWidget>
+#include <QMessageBox>
+#include <QFileDialog>
 
 PageControllerSetup::PageControllerSetup(QWidget *parent) :
     QWidget(parent),
@@ -42,4 +45,64 @@ VescInterface *PageControllerSetup::vesc() const
 void PageControllerSetup::setVesc(VescInterface *vesc)
 {
     mVesc = vesc;
+}
+
+void PageControllerSetup::on_loadMotorConfButton_clicked()
+{
+    if (!mVesc) {
+        QMessageBox::warning(this, tr("Load Motor Configuration"),
+                             tr("Not connected to the VESC."));
+        return;
+    }
+
+    QString path;
+    path = QFileDialog::getOpenFileName(this,
+                                        tr("Choose motor configuration file to load"),
+                                        QString(),
+                                        tr("Xml files (*.xml)"));
+
+    if (path.isNull()) {
+        return;
+    }
+
+    bool res = mVesc->mcConfig()->loadXml(path, "MCConfiguration");
+
+    if (res) {
+        mVesc->emitStatusMessage(tr("Loaded motor configuration"), true);
+        mVesc->commands()->setMcconf();
+    } else {
+        QMessageBox::warning(this, tr("Load motor configuration"),
+                             tr("Could not load motor configuration:<BR>"
+                                "%1").arg(mVesc->mcConfig()->xmlStatus()));
+    }
+}
+
+void PageControllerSetup::on_loadAppConfButton_clicked()
+{
+    if (!mVesc) {
+        QMessageBox::warning(this, tr("Load App Configuration"),
+                             tr("Not connected to the VESC."));
+        return;
+    }
+
+    QString path;
+    path = QFileDialog::getOpenFileName(this,
+                                        tr("Choose app configuration file to load"),
+                                        QString(),
+                                        tr("Xml files (*.xml)"));
+
+    if (path.isNull()) {
+        return;
+    }
+
+    bool res = mVesc->appConfig()->loadXml(path, "APPConfiguration");
+
+    if (res) {
+        mVesc->emitStatusMessage(tr("Loaded app configuration"), true);
+        mVesc->commands()->setAppConf();
+    } else {
+        QMessageBox::warning(this, tr("Load app configuration"),
+                             tr("Could not load app configuration:<BR>"
+                                "%1").arg(mVesc->appConfig()->xmlStatus()));
+    }
 }

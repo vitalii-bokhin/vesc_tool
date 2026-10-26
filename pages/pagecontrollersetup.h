@@ -38,6 +38,10 @@ public:
     VescInterface *vesc() const;
     void setVesc(VescInterface *vesc);
 
+private slots:
+    void on_loadMotorConfButton_clicked();
+    void on_loadAppConfButton_clicked();
+
 private:
     Ui::PageControllerSetup *ui;
     VescInterface *mVesc;

@@ -114,6 +114,7 @@ private slots:
     void on_actionReadAppconfDefault_triggered();
     void on_actionWriteAppconf_triggered();
     void on_actionSaveMotorConfXml_triggered();
+public slots:
     void on_actionLoadMotorConfXml_triggered();
     void on_actionSaveAppconfXml_triggered();
     void on_actionLoadAppconfXml_triggered();
