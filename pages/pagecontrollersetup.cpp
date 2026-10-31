@@ -51,6 +51,9 @@ void PageControllerSetup::setVesc(VescInterface *vesc)
         if (ui->detectFoc) {
             ui->detectFoc->setHideApplyButton(true);
         }
+        if (ui->detectFocHall) {
+            ui->detectFocHall->setVesc(mVesc);
+        }
         reloadParams();
     }
 }
@@ -60,6 +63,10 @@ void PageControllerSetup::reloadParams()
     if (mVesc) {
         ui->generalTab->clearParams();
         ui->generalTab->addParamSubgroup(mVesc->mcConfig(), "foc", "general");
+        if (ui->hallTab) {
+            ui->hallTab->clearParams();
+            ui->hallTab->addParamSubgroup(mVesc->mcConfig(), "foc", "hall sensors");
+        }
     }
 }
 

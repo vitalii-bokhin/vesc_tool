@@ -117,6 +117,33 @@
         <widget class="DetectFoc" name="detectFoc" native="true"/>
        </item>
        <item>
+        <widget class="QLabel" name="labelFocHall">
+         <property name="text">
+          <string>FOC Hall Sensors</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="ParamTable" name="hallTab">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>350</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="DetectFocHall" name="detectFocHall" native="true"/>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -145,6 +172,12 @@
    <class>DetectFoc</class>
    <extends>QWidget</extends>
    <header>widgets/detectfoc.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DetectFocHall</class>
+   <extends>QWidget</extends>
+   <header>widgets/detectfochall.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
