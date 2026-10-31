@@ -57,7 +57,8 @@ HEADERS += \
     $$PWD/detectallfocdialog.h \
     $$PWD/dirsetup.h \
     $$PWD/vesc3dview.h \
-    $$PWD/superslider.h
+    $$PWD/superslider.h \
+    $$PWD/tempgauge.h
 
 SOURCES += \
     $$PWD/batttempplot.cpp \
@@ -95,5 +96,6 @@ SOURCES += \
     $$PWD/detectallfocdialog.cpp \
     $$PWD/dirsetup.cpp \
     $$PWD/vesc3dview.cpp \
-    $$PWD/superslider.cpp
+    $$PWD/superslider.cpp \
+    $$PWD/tempgauge.cpp
 

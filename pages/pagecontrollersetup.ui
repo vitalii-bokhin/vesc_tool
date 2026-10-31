@@ -45,6 +45,22 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
+        <widget class="TempGauge" name="tempGauge" native="true"/>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>5</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QPushButton" name="loadMotorConfButton">
@@ -97,22 +113,22 @@
          </property>
         </widget>
        </item>
-        <item>
-         <widget class="ParamTable" name="generalTab">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>1</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>280</height>
-           </size>
-          </property>
-         </widget>
-        </item>
+       <item>
+        <widget class="ParamTable" name="generalTab">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>280</height>
+          </size>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="DetectFoc" name="detectFoc" native="true"/>
        </item>
@@ -179,6 +195,11 @@
    <extends>QWidget</extends>
    <header>widgets/detectfochall.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TempGauge</class>
+   <extends>QWidget</extends>
+   <header>widgets/tempgauge.h</header>
   </customwidget>
  </customwidgets>
  <resources>

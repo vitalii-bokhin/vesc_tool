@@ -56,6 +56,11 @@ void PageControllerSetup::setVesc(VescInterface *vesc)
             ui->detectFocHall->setWriteConfigEnabled(true);
             ui->detectFocHall->setHideApplyButton(true);
         }
+        connect(mVesc->commands(), SIGNAL(valuesReceived(MC_VALUES,uint)),
+                this, SLOT(valuesReceived(MC_VALUES,uint)));
+
+        // Request initial values to display temperatures
+        mVesc->commands()->getValues();
         reloadParams();
     }
 }
@@ -70,6 +75,12 @@ void PageControllerSetup::reloadParams()
             ui->hallTab->addParamSubgroup(mVesc->mcConfig(), "foc", "hall sensors");
         }
     }
+}
+
+void PageControllerSetup::valuesReceived(MC_VALUES values, unsigned int mask)
+{
+    (void)mask;
+    ui->tempGauge->setValues(values);
 }
 
 void PageControllerSetup::on_loadMotorConfButton_clicked()

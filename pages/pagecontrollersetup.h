@@ -43,6 +43,7 @@ public:
 private slots:
     void on_loadMotorConfButton_clicked();
     void on_loadAppConfButton_clicked();
+    void valuesReceived(MC_VALUES values, unsigned int mask);
 
 private:
     Ui::PageControllerSetup *ui;
