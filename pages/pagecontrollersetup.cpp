@@ -53,6 +53,8 @@ void PageControllerSetup::setVesc(VescInterface *vesc)
         }
         if (ui->detectFocHall) {
             ui->detectFocHall->setVesc(mVesc);
+            ui->detectFocHall->setWriteConfigEnabled(true);
+            ui->detectFocHall->setHideApplyButton(true);
         }
         reloadParams();
     }

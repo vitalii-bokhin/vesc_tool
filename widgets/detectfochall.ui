@@ -77,6 +77,12 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="minimumSize">
+            <size>
+              <width>100</width>
+              <height>0</height>
+            </size>
+          </property>
           <property name="toolTip">
            <string>Start detection</string>
           </property>
@@ -93,6 +99,12 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="minimumSize">
+            <size>
+              <width>200</width>
+              <height>0</height>
+            </size>
+          </property>
           <property name="toolTip">
            <string>Apply detection result</string>
           </property>
@@ -104,6 +116,23 @@
             <width>45</width>
             <height>16</height>
            </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="writeConfigButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Write Config</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../res.qrc">
+            <normaloff>:/res/icons/Download-96.png</normaloff>:/res/icons/Download-96.png</iconset>
           </property>
          </widget>
         </item>

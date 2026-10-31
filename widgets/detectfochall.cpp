@@ -33,6 +33,10 @@ DetectFocHall::DetectFocHall(QWidget *parent) :
     ui->startButton->setIcon(Utility::getIcon("icons/Circled Play-96.png"));
     ui->applyButton->setIcon(Utility::getIcon("icons/apply.png"));
 
+    if (ui->writeConfigButton) {
+        ui->writeConfigButton->setVisible(false);
+    }
+
     layout()->setContentsMargins(0, 0, 0, 0);
     mVesc = nullptr;
 }
@@ -80,6 +84,19 @@ void DetectFocHall::on_applyButton_clicked()
     }
 }
 
+void DetectFocHall::on_writeConfigButton_clicked()
+{
+    if (!mVesc) {
+        return;
+    }
+
+    on_applyButton_clicked();
+
+    if (mVesc->isPortConnected()) {
+        mVesc->commands()->setMcconf();
+    }
+}
+
 VescInterface *DetectFocHall::vesc() const
 {
     return mVesc;
@@ -92,6 +109,20 @@ void DetectFocHall::setVesc(VescInterface *vesc)
     if (mVesc) {
         connect(mVesc->commands(), SIGNAL(focHallTableReceived(QVector<int>,int)),
                 this, SLOT(focHallTableReceived(QVector<int>,int)));
+    }
+}
+
+void DetectFocHall::setWriteConfigEnabled(bool enabled)
+{
+    if (ui->writeConfigButton) {
+        ui->writeConfigButton->setVisible(enabled);
+    }
+}
+
+void DetectFocHall::setHideApplyButton(bool hide)
+{
+    if (ui->applyButton) {
+        ui->applyButton->setVisible(!hide);
     }
 }
 

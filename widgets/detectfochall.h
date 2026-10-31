@@ -37,6 +37,8 @@ public:
 
     VescInterface *vesc() const;
     void setVesc(VescInterface *vesc);
+    void setWriteConfigEnabled(bool enabled);
+    void setHideApplyButton(bool hide);
 
 private slots:
     void focHallTableReceived(QVector<int> hall_table, int res);
@@ -44,6 +46,7 @@ private slots:
     void on_helpButton_clicked();
     void on_startButton_clicked();
     void on_applyButton_clicked();
+    void on_writeConfigButton_clicked();
 
 private:
     Ui::DetectFocHall *ui;
