@@ -23,7 +23,6 @@ jobs:
           host: 'windows'
           target: 'desktop'
           arch: 'win64_mingw81'
-          modules: 'qtserialport qtserialbus qtgamepad'
           tools: 'tools_mingw,8.1.0-1-202004170606,qt.tools.win64_mingw810'
           cache: true
 
