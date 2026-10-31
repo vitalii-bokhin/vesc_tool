@@ -1,0 +1,62 @@
+name: Build Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ release_7_00 ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Qt 5.15.2 + MinGW 8.1
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '5.15.2'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_mingw81'
+          modules: 'qtserialport qtserialbus qtgamepad'
+          tools: 'tools_mingw,8.1.0-1-202004170606,qt.tools.win64_mingw810'
+          cache: true
+
+      - name: Add MinGW to PATH
+        shell: bash
+        run: echo "${IQTA_TOOLS}/mingw810_64/bin" >> "$GITHUB_PATH"
+
+      - name: Check toolchain
+        shell: bash
+        run: |
+          g++ --version
+          qmake -v
+          mingw32-make --version
+
+      - name: Build
+        shell: bash
+        run: |
+          mkdir build_ci
+          cd build_ci
+          qmake ../vesc_tool.pro CONFIG+=release
+          mingw32-make -j4
+
+      - name: Collect and deploy Qt DLLs
+        shell: bash
+        run: |
+          mkdir dist
+          EXE=$(find build_ci -name "vesc_tool*.exe" | head -n 1)
+          echo "Found: $EXE"
+          cp "$EXE" dist/
+          windeployqt --release --qmldir . "dist/$(basename "$EXE")"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vesc_tool-windows
+          path: dist/
