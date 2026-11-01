@@ -52,7 +52,16 @@ jobs:
           EXE=$(find build_ci -name "vesc_tool*.exe" | head -n 1)
           echo "Found: $EXE"
           cp "$EXE" dist/
-          windeployqt --release --qmldir . "dist/$(basename "$EXE")"
+
+          echo "--- diagnostics ---"
+          which windeployqt
+          which qmake
+          qmake -query QT_INSTALL_PLUGINS
+          qmake -query QT_INSTALL_BINS
+          ls "$(qmake -query QT_INSTALL_PLUGINS)/platforms" || true
+          echo "--- deploy ---"
+
+          windeployqt --release --verbose 2 --qmldir . "dist/$(basename "$EXE")"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
