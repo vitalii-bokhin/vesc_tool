@@ -82,6 +82,11 @@ void PageControllerSetup::reloadParams()
             ui->hallTab->clearParams();
             ui->hallTab->addParamSubgroup(mVesc->mcConfig(), "foc", "hall sensors");
         }
+        // App Settings - General tab
+        if (ui->appGeneralTab) {
+            ui->appGeneralTab->clearParams();
+            ui->appGeneralTab->addParamSubgroup(mVesc->appConfig(), "general", "general");
+        }
     }
 }
 
