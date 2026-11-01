@@ -23,6 +23,8 @@
 #include <QWidget>
 #include "vescinterface.h"
 
+class QVBoxLayout;
+
 namespace Ui {
 class PageControllerSetup;
 }
@@ -46,9 +48,22 @@ private slots:
     void valuesReceived(MC_VALUES values, unsigned int mask);
 
 private:
+    enum ConfigType { ConfigMotor, ConfigApp };
+
     Ui::PageControllerSetup *ui;
     VescInterface *mVesc;
+    QStringList mMotorConfigHistory;
+    QStringList mAppConfigHistory;
 
+    void loadConfigHistory();
+    void addToHistory(ConfigType type, const QString &path);
+    void updateHistoryButtons(ConfigType type);
+    void onHistoryClicked(ConfigType type, const QString &path);
+
+    QStringList &historyFor(ConfigType type);
+    QVBoxLayout *historyLayoutFor(ConfigType type);
+    void loadMotorConfig(const QString &path);
+    void loadAppConfig(const QString &path);
 };
 
 #endif // PAGECONTROLLERSETUP_H

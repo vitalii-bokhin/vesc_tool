@@ -22,6 +22,10 @@
 #include <QWidget>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QSettings>
+#include <QPushButton>
+#include <QFileInfo>
+#include <QVBoxLayout>
 
 PageControllerSetup::PageControllerSetup(QWidget *parent) :
     QWidget(parent),
@@ -30,6 +34,10 @@ PageControllerSetup::PageControllerSetup(QWidget *parent) :
     ui->setupUi(this);
     layout()->setContentsMargins(0, 0, 0, 0);
     mVesc = nullptr;
+
+    loadConfigHistory();
+    updateHistoryButtons(ConfigMotor);
+    updateHistoryButtons(ConfigApp);
 }
 
 PageControllerSetup::~PageControllerSetup()
@@ -83,6 +91,93 @@ void PageControllerSetup::valuesReceived(MC_VALUES values, unsigned int mask)
     ui->tempGauge->setValues(values);
 }
 
+void PageControllerSetup::loadConfigHistory()
+{
+    QSettings settings;
+    settings.beginGroup("PageControllerSetup");
+    mMotorConfigHistory = settings.value("motorConfigHistory", QStringList()).toStringList();
+    mAppConfigHistory = settings.value("appConfigHistory", QStringList()).toStringList();
+    settings.endGroup();
+}
+
+void PageControllerSetup::addToHistory(ConfigType type, const QString &path)
+{
+    QStringList &hist = historyFor(type);
+    hist.removeAll(path);
+    hist.prepend(path);
+    while (hist.size() > 2) {
+        hist.removeLast();
+    }
+
+    QSettings settings;
+    settings.beginGroup("PageControllerSetup");
+    settings.setValue(type == ConfigMotor ? "motorConfigHistory" : "appConfigHistory", hist);
+    settings.endGroup();
+
+    updateHistoryButtons(type);
+}
+
+void PageControllerSetup::updateHistoryButtons(ConfigType type)
+{
+    QVBoxLayout *layout = historyLayoutFor(type);
+    if (!layout) {
+        return;
+    }
+
+    // Clear existing buttons
+    while (QLayoutItem *item = layout->takeAt(0)) {
+        if (QWidget *w = item->widget()) {
+            w->hide();
+            w->deleteLater();
+        }
+        delete item;
+    }
+
+    const QStringList &hist = historyFor(type);
+    for (int i = 0; i < hist.size(); ++i) {
+        const QString &path = hist[i];
+        QString fileName = QFileInfo(path).fileName();
+
+        QPushButton *btn = new QPushButton(fileName, ui->scrollAreaWidgetContents);
+        btn->setToolTip(path);
+        btn->setIcon(QIcon(":/res/icons/Download-96.png"));
+        btn->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+
+        connect(btn, &QPushButton::clicked, this, [this, type, path]() {
+            onHistoryClicked(type, path);
+        });
+
+        layout->addWidget(btn);
+    }
+}
+
+QStringList &PageControllerSetup::historyFor(ConfigType type)
+{
+    return type == ConfigMotor ? mMotorConfigHistory : mAppConfigHistory;
+}
+
+QVBoxLayout *PageControllerSetup::historyLayoutFor(ConfigType type)
+{
+    return type == ConfigMotor ? ui->motorHistoryLayout : ui->appHistoryLayout;
+}
+
+void PageControllerSetup::onHistoryClicked(ConfigType type, const QString &path)
+{
+    if (!QFileInfo::exists(path)) {
+        QMessageBox::warning(this, tr("Load Configuration"),
+                             tr("File not found:<BR>%1").arg(path));
+        return;
+    }
+
+    const QString filePath = path;
+
+    if (type == ConfigMotor) {
+        loadMotorConfig(filePath);
+    } else {
+        loadAppConfig(filePath);
+    }
+}
+
 void PageControllerSetup::on_loadMotorConfButton_clicked()
 {
     if (!mVesc) {
@@ -91,13 +186,45 @@ void PageControllerSetup::on_loadMotorConfButton_clicked()
         return;
     }
 
-    QString path;
-    path = QFileDialog::getOpenFileName(this,
-                                        tr("Choose motor configuration file to load"),
-                                        QString(),
-                                        tr("Xml files (*.xml)"));
+    QString path = QFileDialog::getOpenFileName(this,
+                                                tr("Choose motor configuration file to load"),
+                                                QString(),
+                                                tr("Xml files (*.xml)"));
 
     if (path.isNull()) {
+        return;
+    }
+
+    addToHistory(ConfigMotor, path);
+    loadMotorConfig(path);
+}
+
+void PageControllerSetup::on_loadAppConfButton_clicked()
+{
+    if (!mVesc) {
+        QMessageBox::warning(this, tr("Load App Configuration"),
+                             tr("Not connected to the VESC."));
+        return;
+    }
+
+    QString path = QFileDialog::getOpenFileName(this,
+                                                tr("Choose app configuration file to load"),
+                                                QString(),
+                                                tr("Xml files (*.xml)"));
+
+    if (path.isNull()) {
+        return;
+    }
+
+    addToHistory(ConfigApp, path);
+    loadAppConfig(path);
+}
+
+void PageControllerSetup::loadMotorConfig(const QString &path)
+{
+    if (!mVesc) {
+        QMessageBox::warning(this, tr("Load Motor Configuration"),
+                             tr("Not connected to the VESC."));
         return;
     }
 
@@ -113,21 +240,11 @@ void PageControllerSetup::on_loadMotorConfButton_clicked()
     }
 }
 
-void PageControllerSetup::on_loadAppConfButton_clicked()
+void PageControllerSetup::loadAppConfig(const QString &path)
 {
     if (!mVesc) {
         QMessageBox::warning(this, tr("Load App Configuration"),
                              tr("Not connected to the VESC."));
-        return;
-    }
-
-    QString path;
-    path = QFileDialog::getOpenFileName(this,
-                                        tr("Choose app configuration file to load"),
-                                        QString(),
-                                        tr("Xml files (*.xml)"));
-
-    if (path.isNull()) {
         return;
     }
 
