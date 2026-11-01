@@ -38,8 +38,45 @@
 #include <QDesktopWidget>
 #include <QFontDatabase>
 #include <QPixmapCache>
+#include <QObject>
+#include <QEvent>
+#include <QAbstractSpinBox>
+#include <QComboBox>
+#include <QSlider>
+#include <QWidget>
 
 #include "tcphub.h"
+
+// Global event filter to prevent wheel events from changing spinbox/slider/combobox values
+// and let them propagate to parent scroll areas instead
+class WheelBlocker : public QObject
+{
+public:
+    using QObject::QObject;
+    bool eventFilter(QObject *obj, QEvent *event) override
+    {
+        if (event->type() == QEvent::Polish) {
+            // Wheel must not give focus to the widget (no highlight, no cursor)
+            if (qobject_cast<QAbstractSpinBox*>(obj) ||
+                qobject_cast<QComboBox*>(obj) ||
+                qobject_cast<QSlider*>(obj)) {
+                QWidget *w = static_cast<QWidget*>(obj);
+                if (w->focusPolicy() == Qt::WheelFocus) {
+                    w->setFocusPolicy(Qt::StrongFocus);
+                }
+            }
+        } else if (event->type() == QEvent::Wheel) {
+            if (qobject_cast<QAbstractSpinBox*>(obj) ||
+                qobject_cast<QComboBox*>(obj) ||
+                qobject_cast<QSlider*>(obj)) {
+                // Do not change the value; let the parent (scroll area) handle the wheel
+                event->ignore();
+                return true;
+            }
+        }
+        return QObject::eventFilter(obj, event);
+    }
+};
 
 #ifndef HAS_BLUETOOTH
 #include "bleuartdummy.h"
@@ -1031,6 +1068,8 @@ int main(int argc, char *argv[])
     QApplication *a = new QApplication(argc, argv);
     app = a;
 
+    a->installEventFilter(new WheelBlocker(a));
+
     addFonts();
 
     QmlUi *qml = new QmlUi;
@@ -1594,6 +1633,8 @@ int main(int argc, char *argv[])
     } else {
         QApplication *a = new QApplication(argc, argv);
         app = a;
+
+        a->installEventFilter(new WheelBlocker(a));
 
         addFonts();
 
