@@ -48,20 +48,26 @@ jobs:
       - name: Collect and deploy Qt DLLs
         shell: bash
         run: |
-          mkdir dist
+          set -e
+
+          QT_PREFIX="$(qmake -query QT_INSTALL_PREFIX)"
+          echo "Stripping Qt binaries in $QT_PREFIX"
+          find "$QT_PREFIX" -name "*.dll" -exec strip -s {} + 2>/dev/null || true
+
+          mkdir -p dist
           EXE=$(find build_ci -name "vesc_tool*.exe" | head -n 1)
-          echo "Found: $EXE"
+          if [ -z "$EXE" ]; then
+            echo "No exe found in build_ci"
+            exit 1
+          fi
           cp "$EXE" dist/
+          EXE_NAME=$(basename "$EXE")
+          echo "Built exe: $EXE"
 
-          echo "--- diagnostics ---"
-          which windeployqt
-          which qmake
-          qmake -query QT_INSTALL_PLUGINS
-          qmake -query QT_INSTALL_BINS
-          ls "$(qmake -query QT_INSTALL_PLUGINS)/platforms" || true
-          echo "--- deploy ---"
+          windeployqt --release --verbose 2 --qmldir . "dist/$EXE_NAME"
 
-          windeployqt --release --verbose 2 --qmldir . "dist/$(basename "$EXE")"
+          echo "--- dist content ---"
+          ls -R dist | head -n 80
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
