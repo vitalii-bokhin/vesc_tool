@@ -57,6 +57,8 @@ private:
 
     void loadConfigHistory();
     void addToHistory(ConfigType type, const QString &path);
+    void saveHistory(ConfigType type);
+    void removeFromHistory(ConfigType type, const QString &path);
     void updateHistoryButtons(ConfigType type);
     void onHistoryClicked(ConfigType type, const QString &path);
 

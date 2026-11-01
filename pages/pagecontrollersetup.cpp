@@ -114,11 +114,22 @@ void PageControllerSetup::addToHistory(ConfigType type, const QString &path)
         hist.removeLast();
     }
 
+    saveHistory(type);
+    updateHistoryButtons(type);
+}
+
+void PageControllerSetup::saveHistory(ConfigType type)
+{
     QSettings settings;
     settings.beginGroup("PageControllerSetup");
-    settings.setValue(type == ConfigMotor ? "motorConfigHistory" : "appConfigHistory", hist);
+    settings.setValue(type == ConfigMotor ? "motorConfigHistory" : "appConfigHistory", historyFor(type));
     settings.endGroup();
+}
 
+void PageControllerSetup::removeFromHistory(ConfigType type, const QString &path)
+{
+    historyFor(type).removeAll(path);
+    saveHistory(type);
     updateHistoryButtons(type);
 }
 
@@ -129,9 +140,17 @@ void PageControllerSetup::updateHistoryButtons(ConfigType type)
         return;
     }
 
-    // Clear existing buttons
+    // Clear existing buttons (including nested layouts)
     while (QLayoutItem *item = layout->takeAt(0)) {
-        if (QWidget *w = item->widget()) {
+        if (QLayout *row = item->layout()) {
+            while (QLayoutItem *sub = row->takeAt(0)) {
+                if (QWidget *w = sub->widget()) {
+                    w->hide();
+                    w->deleteLater();
+                }
+                delete sub;
+            }
+        } else if (QWidget *w = item->widget()) {
             w->hide();
             w->deleteLater();
         }
@@ -152,7 +171,22 @@ void PageControllerSetup::updateHistoryButtons(ConfigType type)
             onHistoryClicked(type, path);
         });
 
-        layout->addWidget(btn);
+        // Create row with history button and delete button
+        QHBoxLayout *row = new QHBoxLayout();
+        row->setSpacing(4);
+        row->setContentsMargins(0, 0, 0, 0);
+        row->addWidget(btn, 1);
+
+        QPushButton *rm = new QPushButton(QStringLiteral("\u00d7"), ui->scrollAreaWidgetContents);
+        rm->setToolTip(tr("Remove from history"));
+        rm->setCursor(Qt::PointingHandCursor);
+        rm->setFixedWidth(28);
+        connect(rm, &QPushButton::clicked, this, [this, type, path]() {
+            removeFromHistory(type, path);
+        });
+        row->addWidget(rm, 0);
+
+        layout->addLayout(row);
     }
 }
 
