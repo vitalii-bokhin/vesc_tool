@@ -170,6 +170,12 @@ void DetectFoc::setVesc(VescInterface *vesc)
         connect(mVesc->mcConfig(), SIGNAL(paramChangedDouble(QObject*,QString,double)),
                 this, SLOT(paramChangedDouble(QObject*,QString,double)));
 
+        connect(mVesc, &VescInterface::portConnectedChanged, this, [this]() {
+            if (!mVesc->isPortConnected()) {
+                resetValues();
+            }
+        });
+
         ui->currentBox->setValue(mVesc->mcConfig()->getParamDouble("l_current_max") / 3.0);
     }
 }
@@ -179,6 +185,41 @@ void DetectFoc::setSkipConfirmation(bool skip)
     mSkipConfirmation = skip;
 }
 
+void DetectFoc::setResetBoxValues(bool reset)
+{
+    resetBoxValues = reset;
+}
+
+void DetectFoc::resetValues()
+{
+    if (resetBoxValues) {
+        ui->currentBox->setValue(5.0);
+        ui->dutyBox->setValue(0.3);
+        ui->erpmBox->setValue(2000.0);
+        ui->tcBox->setValue(500.0);
+        ui->resistanceBox->setValue(0.0);
+        ui->inductanceBox->setValue(0.0);
+        ui->inductanceDiffBox->setValue(0.0);
+        ui->lambdaBox->setValue(0.0);
+        ui->obsGainBox->setValue(0.0);
+        ui->kpBox->setValue(0.0);
+        ui->kiBox->setValue(0.0);
+        ui->encOffsetBox->setValue(-1.0);
+        ui->encRatioBox->setValue(-1.0);
+        ui->encInvertedBox->setCurrentIndex(0);
+        ui->inductanceDiffBox->setValue(0.0);
+        ui->lambdaBox->setValue(0.0);
+        ui->obsGainBox->setValue(0.0);
+        ui->kpBox->setValue(0.0);
+        ui->kiBox->setValue(0.0);
+        ui->encOffsetBox->setValue(-1.0);
+        ui->encRatioBox->setValue(-1.0);
+        ui->encInvertedBox->setCurrentIndex(0);
+        mLastCalcOk = false;
+        mLastOkValuesApplied = false;
+        updateColors();
+    }
+}
 
 void DetectFoc::motorRLReceived(double r, double l, double ld_lq_diff)
 {

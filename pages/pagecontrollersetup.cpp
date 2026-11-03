@@ -58,6 +58,7 @@ void PageControllerSetup::setVesc(VescInterface *vesc)
         ui->detectFoc->setVesc(mVesc);
         ui->detectFoc->setHideApplyButton(true);
         ui->detectFoc->setSkipConfirmation(true);
+        ui->detectFoc->setResetBoxValues(true);
 
         ui->detectFocHall->setVesc(mVesc);
         ui->detectFocHall->setWriteConfigEnabled(true);

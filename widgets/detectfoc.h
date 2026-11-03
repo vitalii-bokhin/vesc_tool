@@ -41,6 +41,7 @@ public:
     bool lastOkValuesApplied() const;
     void setHideApplyButton(bool hide);
     void setSkipConfirmation(bool skip);
+    void setResetBoxValues(bool reset);
 
 private slots:
     void motorRLReceived(double r, double l, double ld_lq_diff);
@@ -68,8 +69,10 @@ private:
     double mTempMotorLast;
     bool mEncoderValuesOk;
     bool mSkipConfirmation = false;
+    bool resetBoxValues = false;
 
     void updateColors();
+    void resetValues();
 
 };
 
