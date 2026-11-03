@@ -58,6 +58,7 @@ void PageControllerSetup::setVesc(VescInterface *vesc)
         ui->detectFoc->setVesc(mVesc);
         if (ui->detectFoc) {
             ui->detectFoc->setHideApplyButton(true);
+            ui->detectFoc->setSkipConfirmation(true);
         }
         if (ui->detectFocHall) {
             ui->detectFocHall->setVesc(mVesc);

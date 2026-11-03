@@ -60,6 +60,7 @@ DetectFoc::~DetectFoc()
     delete ui;
 }
 
+
 void DetectFoc::on_rlButton_clicked()
 {
     if (mVesc) {
@@ -70,17 +71,21 @@ void DetectFoc::on_rlButton_clicked()
             return;
         }
 
-        QMessageBox::StandardButton reply = QMessageBox::warning(this,
-                                     tr("Measure R & L"),
-                                     tr("When measuring R & L the motor is going to make some noises, but "
-                                        "not rotate. These noises are completely normal, so don't unplug "
-                                        "anything unless you see smoke."),
-                                     QMessageBox::Ok | QMessageBox::Cancel);
+        if (!mSkipConfirmation) {
+            QMessageBox::StandardButton reply = QMessageBox::warning(this,
+                                          tr("Measure R & L"),
+                                          tr("When measuring R & L the motor is going to make some noises, but "
+                                             "not rotate. These noises are completely normal, so don't unplug "
+                                             "anything unless you see smoke."),
+                                          QMessageBox::Ok | QMessageBox::Cancel);
 
-        if (reply == QMessageBox::Ok) {
-            mVesc->commands()->measureRL();
-            mRunning = true;
+            if (reply != QMessageBox::Ok) {
+                return;
+            }
         }
+
+        mVesc->commands()->measureRL();
+        mRunning = true;
     }
 }
 
@@ -103,33 +108,42 @@ void DetectFoc::on_lambdaButton_clicked()
                 return;
             }
 
-            reply = QMessageBox::warning(this,
-                                         tr("Warning"),
-                                         tr("<font color=\"red\">Warning: </font>"
-                                            "This is going to spin up the motor. Make "
-                                            "sure that nothing is in the way."),
-                                         QMessageBox::Ok | QMessageBox::Cancel);
+            if (!mSkipConfirmation) {
+                reply = QMessageBox::warning(this,
+                                             tr("Warning"),
+                                             tr("<font color=\"red\">Warning: </font>"
+                                                "This is going to spin up the motor. Make "
+                                                "sure that nothing is in the way."),
+                                             QMessageBox::Ok | QMessageBox::Cancel);
+
+                if (reply != QMessageBox::Ok) {
+                    return;
+                }
+            }
         } else {
-            reply = QMessageBox::warning(this,
-                                         tr("Warning"),
-                                         tr("As the current is 0 this is going to perform passive flux "
-                                            "linkage measurement. Make sure that the motor is driven "
-                                            "externally."),
-                                         QMessageBox::Ok | QMessageBox::Cancel);
+            if (!mSkipConfirmation) {
+                reply = QMessageBox::warning(this,
+                                             tr("Warning"),
+                                             tr("As the current is 0 this is going to perform passive flux "
+                                                "linkage measurement. Make sure that the motor is driven "
+                                                "externally."),
+                                             QMessageBox::Ok | QMessageBox::Cancel);
+
+                if (reply != QMessageBox::Ok) {
+                    return;
+                }
+            }
         }
 
-        if (reply == QMessageBox::Ok) {
-            mVesc->commands()->measureLinkageOpenloop(ui->currentBox->value(),
-                                                      ui->erpmBox->value(),
-                                                      ui->dutyBox->value(),
-                                                      ui->resistanceBox->value() / 1e3,
-                                                      ui->inductanceBox->value() / 1e6);
+        mVesc->commands()->measureLinkageOpenloop(ui->currentBox->value(),
+                                                  ui->erpmBox->value(),
+                                                  ui->dutyBox->value(),
+                                                  ui->resistanceBox->value() / 1e3,
+                                                  ui->inductanceBox->value() / 1e6);
 
-            mRunning = true;
-        }
+        mRunning = true;
     }
 }
-
 void DetectFoc::on_helpButton_clicked()
 {
     if (mVesc) {
@@ -159,6 +173,12 @@ void DetectFoc::setVesc(VescInterface *vesc)
         ui->currentBox->setValue(mVesc->mcConfig()->getParamDouble("l_current_max") / 3.0);
     }
 }
+
+void DetectFoc::setSkipConfirmation(bool skip)
+{
+    mSkipConfirmation = skip;
+}
+
 
 void DetectFoc::motorRLReceived(double r, double l, double ld_lq_diff)
 {
@@ -437,36 +457,40 @@ void DetectFoc::on_calcGainButton_clicked()
     updateColors();
 }
 
+
 void DetectFoc::on_calcApplyLocalButton_clicked()
 {
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::information(this,
-                                     tr("Calculate"),
-                                     tr("This is going to calculate KP, KI and the observer "
-                                        "gain from the old settings and the time constant, and "
-                                        "apply them. This is useful for manually entering parameters, "
-                                        "of for changing time constant without running detection. Do "
-                                        "you want to proceed?"),
-                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    if (!mSkipConfirmation) {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::information(this,
+                                         tr("Calculate"),
+                                         tr("This is going to calculate KP, KI and the observer "
+                                            "gain from the old settings and the time constant, and "
+                                            "apply them. This is useful for manually entering parameters, "
+                                            "of for changing time constant without running detection. Do "
+                                            "you want to proceed?"),
+                                         QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
-    if (reply == QMessageBox::Yes) {
-        double tc = ui->tcBox->value();
-        double l = mVesc->mcConfig()->getParamDouble("foc_motor_l");
-        double r = mVesc->mcConfig()->getParamDouble("foc_motor_r");
-        double lambda = mVesc->mcConfig()->getParamDouble("foc_motor_flux_linkage");
-
-        double bw = 1.0 / (tc * 1e-6);
-        double kp = l * bw;
-        double ki = r * bw;
-        double gain = 1.0e-3 / (lambda * lambda);
-
-        mVesc->mcConfig()->updateParamDouble("foc_current_kp", kp);
-        mVesc->mcConfig()->updateParamDouble("foc_current_ki", ki);
-        mVesc->mcConfig()->updateParamDouble("foc_observer_gain", gain * 1e6);
-        mVesc->emitStatusMessage(tr("KP, KI and Observer Gain Applied"), true);
+        if (reply != QMessageBox::Yes) {
+            return;
+        }
     }
-}
 
+    double tc = ui->tcBox->value();
+    double l = mVesc->mcConfig()->getParamDouble("foc_motor_l");
+    double r = mVesc->mcConfig()->getParamDouble("foc_motor_r");
+    double lambda = mVesc->mcConfig()->getParamDouble("foc_motor_flux_linkage");
+
+    double bw = 1.0 / (tc * 1e-6);
+    double kp = l * bw;
+    double ki = r * bw;
+    double gain = 1.0e-3 / (lambda * lambda);
+
+    mVesc->mcConfig()->updateParamDouble("foc_current_kp", kp);
+    mVesc->mcConfig()->updateParamDouble("foc_current_ki", ki);
+    mVesc->mcConfig()->updateParamDouble("foc_observer_gain", gain * 1e6);
+    mVesc->emitStatusMessage(tr("KP, KI and Observer Gain Applied"), true);
+}
 void DetectFoc::on_encApplyButton_clicked()
 {
     if (mEncoderValuesOk) {
