@@ -335,7 +335,7 @@ void DetectFoc::on_writeConfigButton_clicked()
     on_applyAllButton_clicked();
 
     if (mLastOkValuesApplied && mVesc->isPortConnected()) {
-        mVesc->commands()->setMcconf();
+        mVesc->commands()->setMcconf(!mSkipConfirmation);
     }
 }
 

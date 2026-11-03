@@ -97,7 +97,7 @@ void DetectFocHall::on_writeConfigButton_clicked()
     on_applyButton_clicked();
 
     if (mVesc->isPortConnected()) {
-        mVesc->commands()->setMcconf();
+        mVesc->commands()->setMcconf(!mSkipConfirmation);
     }
 }
 
