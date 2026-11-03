@@ -63,6 +63,7 @@ void PageControllerSetup::setVesc(VescInterface *vesc)
         ui->detectFocHall->setWriteConfigEnabled(true);
         ui->detectFocHall->setHideApplyButton(true);
         ui->detectFocHall->setSkipConfirmation(true);
+        ui->detectFocHall->setResetBoxValues(true);
 
         connect(mVesc->commands(), SIGNAL(valuesReceived(MC_VALUES,uint)),
                 this, SLOT(valuesReceived(MC_VALUES,uint)));

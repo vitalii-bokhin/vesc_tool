@@ -40,6 +40,7 @@ public:
     void setWriteConfigEnabled(bool enabled);
     void setHideApplyButton(bool hide);
     void setSkipConfirmation(bool skip);
+    void setResetBoxValues(bool reset);
 
 private slots:
     void focHallTableReceived(QVector<int> hall_table, int res);
@@ -53,6 +54,8 @@ private:
     Ui::DetectFocHall *ui;
     VescInterface *mVesc;
     bool mSkipConfirmation = false;
+    bool resetBoxValues = false;
+    void resetValues();
 
 };
 

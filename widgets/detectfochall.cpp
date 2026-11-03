@@ -113,6 +113,12 @@ void DetectFocHall::setVesc(VescInterface *vesc)
     if (mVesc) {
         connect(mVesc->commands(), SIGNAL(focHallTableReceived(QVector<int>,int)),
                 this, SLOT(focHallTableReceived(QVector<int>,int)));
+
+        connect(mVesc, &VescInterface::portConnectedChanged, this, [this]() {
+            if (!mVesc->isPortConnected()) {
+                resetValues();
+            }
+        });
     }
 }
 
@@ -149,5 +155,24 @@ void DetectFocHall::focHallTableReceived(QVector<int> hall_table, int res)
         ui->hall5Box->setValue(hall_table.at(5));
         ui->hall6Box->setValue(hall_table.at(6));
         ui->hall7Box->setValue(hall_table.at(7));
+    }
+}
+
+void DetectFocHall::setResetBoxValues(bool reset)
+{
+    resetBoxValues = reset;
+}
+
+void DetectFocHall::resetValues()
+{
+    if (resetBoxValues) {
+        ui->hall0Box->setValue(0);
+        ui->hall1Box->setValue(0);
+        ui->hall2Box->setValue(0);
+        ui->hall3Box->setValue(0);
+        ui->hall4Box->setValue(0);
+        ui->hall5Box->setValue(0);
+        ui->hall6Box->setValue(0);
+        ui->hall7Box->setValue(0);
     }
 }
