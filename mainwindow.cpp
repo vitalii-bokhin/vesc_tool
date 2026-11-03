@@ -407,6 +407,7 @@ MainWindow::MainWindow(QWidget *parent) :
         mPageBldc->reloadParams();
         mPageDc->reloadParams();
         mPageFoc->reloadParams();
+        mPageControllerSetup->reloadParams();
         mPageGpd->reloadParams();
         mPageControllers->reloadParams();
         mPageMotorInfo->reloadParams();

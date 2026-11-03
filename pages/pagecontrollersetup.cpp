@@ -56,16 +56,14 @@ void PageControllerSetup::setVesc(VescInterface *vesc)
 
     if (mVesc) {
         ui->detectFoc->setVesc(mVesc);
-        if (ui->detectFoc) {
-            ui->detectFoc->setHideApplyButton(true);
-            ui->detectFoc->setSkipConfirmation(true);
-        }
-        if (ui->detectFocHall) {
-            ui->detectFocHall->setVesc(mVesc);
-            ui->detectFocHall->setWriteConfigEnabled(true);
-            ui->detectFocHall->setHideApplyButton(true);
-            ui->detectFocHall->setSkipConfirmation(true);
-        }
+        ui->detectFoc->setHideApplyButton(true);
+        ui->detectFoc->setSkipConfirmation(true);
+
+        ui->detectFocHall->setVesc(mVesc);
+        ui->detectFocHall->setWriteConfigEnabled(true);
+        ui->detectFocHall->setHideApplyButton(true);
+        ui->detectFocHall->setSkipConfirmation(true);
+
         connect(mVesc->commands(), SIGNAL(valuesReceived(MC_VALUES,uint)),
                 this, SLOT(valuesReceived(MC_VALUES,uint)));
 
