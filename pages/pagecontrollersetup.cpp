@@ -271,7 +271,7 @@ void PageControllerSetup::loadMotorConfig(const QString &path)
 
     if (res) {
         mVesc->emitStatusMessage(tr("Loaded motor configuration"), true);
-        mVesc->commands()->setMcconf();
+        mVesc->commands()->setMcconf(false);
     } else {
         QMessageBox::warning(this, tr("Load motor configuration"),
                              tr("Could not load motor configuration:<BR>"
