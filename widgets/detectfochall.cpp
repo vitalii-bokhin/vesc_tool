@@ -53,22 +53,26 @@ void DetectFocHall::on_helpButton_clicked()
     }
 }
 
+
 void DetectFocHall::on_startButton_clicked()
 {
     if (mVesc) {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::warning(this,
-                                     tr("Detect FOC Hall Sensor Parameters"),
-                                     tr("This is going to turn the motor slowly. Make "
-                                        "sure that nothing is in the way."),
-                                     QMessageBox::Ok | QMessageBox::Cancel);
+        if (!mSkipConfirmation) {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::warning(this,
+                                         tr("Detect FOC Hall Sensor Parameters"),
+                                         tr("This is going to turn the motor slowly. Make "
+                                            "sure that nothing is in the way."),
+                                         QMessageBox::Ok | QMessageBox::Cancel);
 
-        if (reply == QMessageBox::Ok) {
-            mVesc->commands()->measureHallFoc(ui->currentBox->value());
+            if (reply != QMessageBox::Ok) {
+                return;
+            }
         }
+
+        mVesc->commands()->measureHallFoc(ui->currentBox->value());
     }
 }
-
 void DetectFocHall::on_applyButton_clicked()
 {
     if (mVesc) {
@@ -124,6 +128,11 @@ void DetectFocHall::setHideApplyButton(bool hide)
     if (ui->applyButton) {
         ui->applyButton->setVisible(!hide);
     }
+}
+
+void DetectFocHall::setSkipConfirmation(bool skip)
+{
+    mSkipConfirmation = skip;
 }
 
 void DetectFocHall::focHallTableReceived(QVector<int> hall_table, int res)
