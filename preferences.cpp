@@ -139,6 +139,7 @@ Preferences::Preferences(QWidget *parent) :
     ui->reconnectCanBox->setChecked(mSettings.value("reconnectLastCan", true).toBool());
     ui->reduceLispBox->setChecked(mSettings.value("reduceLisp", false).toBool());
     ui->replMaxLineBox->setValue(mSettings.value("scripting/replMaxLines", 5000).toInt());
+    ui->autoconnectOnAvailableBox->setChecked(mSettings.value("autoconnect_on_available", false).toBool());
 
     saveSettingsChanged();
 }
@@ -475,6 +476,7 @@ void Preferences::saveSettingsChanged()
     mSettings.setValue("scripting/uploadContentEditor", ui->uploadContentEditorButton->isChecked());
     mSettings.setValue("reconnectLastCan", ui->reconnectCanBox->isChecked());
     mSettings.setValue("reduceLisp", ui->reduceLispBox->isChecked());
+    mSettings.setValue("autoconnect_on_available", ui->autoconnectOnAvailableBox->isChecked());
     mSettings.setValue("scripting/replMaxLines", ui->replMaxLineBox->value());
 
     mSettings.sync();

@@ -29,6 +29,7 @@
 #include <QEventLoop>
 #include <QDesktopServices>
 #include <QProgressDialog>
+#include <QDateTime>
 #include "parametereditor.h"
 #include "startupwizard.h"
 #include "widgets/experimentplot.h"
@@ -525,6 +526,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
         ui->actionReconnect->setEnabled(!mVesc->isPortConnected());
         ui->actionDisconnect->setEnabled(mVesc->isPortConnected());
+
+        // Auto-reconnect logic
+        static int lastReconnectAttempt = 0;
+        if (mSettings.value("autoconnect_on_available", false).toBool() &&
+            !mVesc->isPortConnected() &&
+            mVesc->lastPortAvailable() &&
+            !mVesc->isAutoconnectOngoing() &&
+            mVesc->getFwUploadProgress() == 0.0) {
+            int now = QDateTime::currentMSecsSinceEpoch() / 1000;
+            if (now - lastReconnectAttempt >= 3) {
+                lastReconnectAttempt = now;
+                mVesc->reconnectLastPort();
+            }
+        }
     });
 
     mSettingSyncTimer.start(10000);
