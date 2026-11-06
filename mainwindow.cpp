@@ -533,7 +533,7 @@ MainWindow::MainWindow(QWidget *parent) :
             !mVesc->isPortConnected() &&
             mVesc->lastPortAvailable() &&
             !mVesc->isAutoconnectOngoing() &&
-            mVesc->getFwUploadProgress() == 0.0) {
+            mVesc->getFwUploadProgress() < -0.1) {
             int now = QDateTime::currentMSecsSinceEpoch() / 1000;
             if (now - lastReconnectAttempt >= 3) {
                 lastReconnectAttempt = now;

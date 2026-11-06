@@ -92,6 +92,7 @@ private slots:
     void on_estopTimeBox_valueChanged(int arg1);
     void on_pathLocalLogChooseButton_clicked();
     void on_pathLocalLogEdit_textChanged(const QString &arg1);
+    void on_autoconnectOnAvailableBox_toggled(bool checked);
 
 private:
     Ui::Preferences *ui;

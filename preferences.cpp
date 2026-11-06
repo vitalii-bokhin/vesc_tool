@@ -514,3 +514,9 @@ void Preferences::on_pathLocalLogEdit_textChanged(const QString &arg1)
     mSettings.setValue("path_local_log", arg1);
     mSettings.sync();
 }
+
+void Preferences::on_autoconnectOnAvailableBox_toggled(bool checked)
+{
+    mSettings.setValue("autoconnect_on_available", checked);
+    mSettings.sync();
+}
