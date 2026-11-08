@@ -65,7 +65,6 @@ private:
     QStringList mMotorConfigHistory;
     QStringList mAppConfigHistory;
     SetupStep mSetupStep = StepIdle;
-    SetupStep mLastSetupStep = StepIdle;
     QTimer mConfigWriteTimeout;
 
     void loadConfigHistory();
@@ -79,6 +78,7 @@ private:
     QVBoxLayout *historyLayoutFor(ConfigType type);
     void loadMotorConfig(const QString &path);
     void loadAppConfig(const QString &path);
+    static SetupStep nextSetupStep(SetupStep s);
     void runNextStep();
     void finishSetup(const QString &message, bool success);
 };

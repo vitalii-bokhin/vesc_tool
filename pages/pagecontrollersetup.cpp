@@ -193,9 +193,15 @@ void PageControllerSetup::configWriteTimeout()
         return;
     }
 
-    finishSetup(tr("Full setup stopped: no \"Motor config write OK\" response received."), false);
-    QMessageBox::information(this, tr("Full Setup"),
-                             tr("Full setup stopped: no \"Motor config write OK\" response received."));
+    QString msg;
+    if (mSetupStep == StepWriteConfig) {
+        msg = tr("Full setup stopped: Motor configuration write not confirmed.");
+    } else {
+        msg = tr("Full setup stopped: Hall configuration write not confirmed.");
+    }
+
+    finishSetup(msg, false);
+    QMessageBox::information(this, tr("Full Setup"), msg);
 }
 
 void PageControllerSetup::hallMeasurementDone(bool ok)
@@ -230,28 +236,38 @@ void PageControllerSetup::portConnectedChanged()
     }
 }
 
+PageControllerSetup::SetupStep PageControllerSetup::nextSetupStep(SetupStep s)
+{
+    switch (s) {
+    case StepIdle:            return StepMeasureRL;
+    case StepMeasureRL:       return StepMeasureLambda;
+    case StepMeasureLambda:   return StepWriteConfig;
+    case StepWriteConfig:     return StepMeasureHall;
+    case StepMeasureHall:     return StepWriteHallConfig;
+    case StepWriteHallConfig: return StepDone;
+    case StepDone:            return StepDone;
+    }
+    return StepDone;
+}
+
 void PageControllerSetup::runNextStep()
 {
-    switch (mLastSetupStep) {
-    case StepIdle:
-        mLastSetupStep = StepMeasureRL;
-        mSetupStep = StepMeasureRL;
+    mSetupStep = nextSetupStep(mSetupStep);
+
+    switch (mSetupStep) {
+    case StepMeasureRL:
         if (!ui->detectFoc->startMeasureRL()) {
             finishSetup(tr("Could not start R & L measurement."), false);
         }
         break;
 
-    case StepMeasureRL:
-        mLastSetupStep = StepMeasureLambda;
-        mSetupStep = StepMeasureLambda;
+    case StepMeasureLambda:
         if (!ui->detectFoc->startMeasureLambda()) {
             finishSetup(tr("Could not start flux linkage measurement."), false);
         }
         break;
 
-    case StepMeasureLambda:
-        mLastSetupStep = StepWriteConfig;
-        mSetupStep = StepWriteConfig;
+    case StepWriteConfig:
         if (!ui->detectFoc->applyAndWriteConfig()) {
             finishSetup(tr("Could not apply parameters and write motor configuration."), false);
         } else {
@@ -259,17 +275,13 @@ void PageControllerSetup::runNextStep()
         }
         break;
 
-    case StepWriteConfig:
-        mLastSetupStep = StepMeasureHall;
-        mSetupStep = StepMeasureHall;
+    case StepMeasureHall:
         if (!ui->detectFocHall->startMeasureHall()) {
             finishSetup(tr("Could not start Hall measurement."), false);
         }
         break;
 
-    case StepMeasureHall:
-        mLastSetupStep = StepWriteHallConfig;
-        mSetupStep = StepWriteHallConfig;
+    case StepWriteHallConfig:
         if (!ui->detectFocHall->applyAndWriteHallConfig()) {
             finishSetup(tr("Could not apply and write Hall configuration."), false);
         } else {
@@ -277,8 +289,7 @@ void PageControllerSetup::runNextStep()
         }
         break;
 
-    case StepWriteHallConfig:
-        mSetupStep = StepDone;
+    case StepDone:
         finishSetup(tr("Full setup completed."), true);
         break;
 
@@ -303,7 +314,6 @@ void PageControllerSetup::finishSetup(const QString &message, bool success)
     ui->detectFoc->cancelAutomation();
     ui->detectFocHall->cancelHallAutomation();
     mSetupStep = StepIdle;
-    mLastSetupStep = StepIdle;
     ui->runSetupButton->setText(tr("Run Full Setup"));
 
     for (QPushButton *b : ui->detectFoc->findChildren<QPushButton*>()) {
