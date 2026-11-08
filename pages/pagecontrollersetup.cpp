@@ -118,7 +118,29 @@ void PageControllerSetup::valuesReceived(MC_VALUES values, unsigned int mask)
 void PageControllerSetup::on_runSetupButton_clicked()
 {
     if (mSetupStep != StepIdle) {
-        finishSetup(tr("Full setup aborted."), false);
+        QMessageBox::StandardButton answer = QMessageBox::question(
+                    this,
+                    tr("Full Setup"),
+                    tr("Abort the running full setup?"),
+                    QMessageBox::Ok | QMessageBox::Cancel,
+                    QMessageBox::Cancel
+                    );
+
+        if (answer == QMessageBox::Ok && mSetupStep != StepIdle) {
+            finishSetup(tr("Full setup aborted."), false);
+        }
+        return;
+    }
+
+    QMessageBox::StandardButton answer = QMessageBox::question(
+                this,
+                tr("Full Setup"),
+                tr("Start the full setup?"),
+                QMessageBox::Ok | QMessageBox::Cancel,
+                QMessageBox::Cancel
+                );
+
+    if (answer != QMessageBox::Ok) {
         return;
     }
 
