@@ -71,6 +71,7 @@ void DetectFocHall::on_startButton_clicked()
         }
 
         mVesc->commands()->measureHallFoc(ui->currentBox->value());
+        mRunning = mVesc->isPortConnected();
     }
 }
 void DetectFocHall::on_applyButton_clicked()
@@ -106,6 +107,11 @@ VescInterface *DetectFocHall::vesc() const
     return mVesc;
 }
 
+bool DetectFocHall::isRunning() const
+{
+    return mRunning;
+}
+
 void DetectFocHall::setVesc(VescInterface *vesc)
 {
     mVesc = vesc;
@@ -116,6 +122,7 @@ void DetectFocHall::setVesc(VescInterface *vesc)
 
         connect(mVesc, &VescInterface::portConnectedChanged, this, [this]() {
             if (!mVesc->isPortConnected()) {
+                mRunning = false;
                 resetValues();
             }
         });
@@ -143,6 +150,8 @@ void DetectFocHall::setSkipConfirmation(bool skip)
 
 void DetectFocHall::focHallTableReceived(QVector<int> hall_table, int res)
 {
+    mRunning = false;
+
     if (res != 0) {
         mVesc->emitStatusMessage(tr("Bad FOC Hall Detection Result Received"), false);
     } else {

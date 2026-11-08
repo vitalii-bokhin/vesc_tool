@@ -139,6 +139,31 @@
                 </layout>
               </item>
               <item>
+                <widget class="QPushButton" name="runSetupButton">
+                  <property name="text">
+                    <string>Run Full Setup</string>
+                  </property>
+                  <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                    </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                    <size>
+                      <width>150</width>
+                      <height>50</height>
+                    </size>
+                  </property>
+                  <property name="maximumSize">
+                    <size>
+                      <width>150</width>
+                      <height>50</height>
+                    </size>
+                  </property>
+                </widget>
+              </item>
+              <item>
                 <widget class="QLabel" name="labelFocGeneral">
                   <property name="text">
                     <string>FOC Motor Configuration</string>

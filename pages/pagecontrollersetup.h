@@ -21,6 +21,7 @@
 #define PAGECONTROLLERSETUP_H
 
 #include <QWidget>
+#include <QTimer>
 #include "vescinterface.h"
 
 class QVBoxLayout;
@@ -45,15 +46,25 @@ public:
 private slots:
     void on_loadMotorConfButton_clicked();
     void on_loadAppConfButton_clicked();
+    void on_runSetupButton_clicked();
     void valuesReceived(MC_VALUES values, unsigned int mask);
+    void rlMeasurementDone(bool ok);
+    void lambdaMeasurementDone(bool ok);
+    void configWritten(bool ok);
+    void configWriteTimeout();
+    void portConnectedChanged();
 
 private:
     enum ConfigType { ConfigMotor, ConfigApp };
+    enum SetupStep { StepIdle, StepMeasureRL, StepMeasureLambda, StepWriteConfig, StepDone };
 
     Ui::PageControllerSetup *ui;
     VescInterface *mVesc;
     QStringList mMotorConfigHistory;
     QStringList mAppConfigHistory;
+    SetupStep mSetupStep = StepIdle;
+    SetupStep mLastSetupStep = StepIdle;
+    QTimer mConfigWriteTimeout;
 
     void loadConfigHistory();
     void addToHistory(ConfigType type, const QString &path);
@@ -66,6 +77,8 @@ private:
     QVBoxLayout *historyLayoutFor(ConfigType type);
     void loadMotorConfig(const QString &path);
     void loadAppConfig(const QString &path);
+    void runNextStep();
+    void finishSetup(const QString &message, bool success);
 };
 
 #endif // PAGECONTROLLERSETUP_H

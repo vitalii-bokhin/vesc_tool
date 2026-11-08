@@ -37,6 +37,7 @@ public:
 
     VescInterface *vesc() const;
     void setVesc(VescInterface *vesc);
+    bool isRunning() const;
     void setWriteConfigEnabled(bool enabled);
     void setHideApplyButton(bool hide);
     void setSkipConfirmation(bool skip);
@@ -53,6 +54,7 @@ private slots:
 private:
     Ui::DetectFocHall *ui;
     VescInterface *mVesc;
+    bool mRunning = false;
     bool mSkipConfirmation = false;
     bool resetBoxValues = false;
     void resetValues();

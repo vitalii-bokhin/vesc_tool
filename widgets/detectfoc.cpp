@@ -169,6 +169,8 @@ void DetectFoc::setVesc(VescInterface *vesc)
                 this, SLOT(encoderParamReceived(ENCODER_DETECT_RES)));
         connect(mVesc->mcConfig(), SIGNAL(paramChangedDouble(QObject*,QString,double)),
                 this, SLOT(paramChangedDouble(QObject*,QString,double)));
+        connect(mVesc->commands(), SIGNAL(ackReceived(QString)),
+                this, SLOT(ackReceived(QString)));
 
         connect(mVesc, &VescInterface::portConnectedChanged, this, [this]() {
             if (!mVesc->isPortConnected()) {
@@ -188,6 +190,29 @@ void DetectFoc::setSkipConfirmation(bool skip)
 void DetectFoc::setResetBoxValues(bool reset)
 {
     resetBoxValues = reset;
+}
+
+bool DetectFoc::startMeasureRL()
+{
+    on_rlButton_clicked();
+    return mRunning;
+}
+
+bool DetectFoc::startMeasureLambda()
+{
+    on_lambdaButton_clicked();
+    return mRunning;
+}
+
+bool DetectFoc::applyAndWriteConfig()
+{
+    on_writeConfigButton_clicked();
+    return mLastOkValuesApplied && mVesc && mVesc->isPortConnected();
+}
+
+void DetectFoc::cancelAutomation()
+{
+    mRunning = false;
 }
 
 void DetectFoc::resetValues()
@@ -228,8 +253,9 @@ void DetectFoc::motorRLReceived(double r, double l, double ld_lq_diff)
     }
 
     mRunning = false;
+    bool err = (r < 1e-9 && l < 1e-9);
 
-    if (r < 1e-9 && l < 1e-9) {
+    if (err) {
         mVesc->emitStatusMessage(tr("Bad FOC Detection Result Received"), false);
         QMessageBox::critical(this,
                               tr("Bad Detection Result"),
@@ -249,17 +275,11 @@ void DetectFoc::motorRLReceived(double r, double l, double ld_lq_diff)
         } else {
             mTempMotorLast = -100.0;
         }
-
-        // TODO: Use some rule to calculate time constant?
-//        if (l > 50.0) {
-//            ui->tcBox->setValue(2000);
-//        } else {
-//            ui->tcBox->setValue(1000);
-//        }
     }
 
     mLastOkValuesApplied = false;
     updateColors();
+    emit measureRLDone(!err);
 }
 
 void DetectFoc::motorLinkageReceived(double flux_linkage)
@@ -269,8 +289,9 @@ void DetectFoc::motorLinkageReceived(double flux_linkage)
     }
 
     mRunning = false;
+    bool err = flux_linkage < 1e-9;
 
-    if (flux_linkage < 1e-9) {
+    if (err) {
         mVesc->emitStatusMessage(tr("Bad FOC Detection Result Received"), false);
         QMessageBox::critical(this,
                               tr("Bad Detection Result"),
@@ -285,6 +306,7 @@ void DetectFoc::motorLinkageReceived(double flux_linkage)
 
     mLastOkValuesApplied = false;
     updateColors();
+    emit measureLambdaDone(!err);
 }
 
 void DetectFoc::encoderParamReceived(ENCODER_DETECT_RES res)
@@ -301,6 +323,13 @@ void DetectFoc::paramChangedDouble(QObject *src, QString name, double newParam)
 
     if (name == "l_current_max") {
         ui->currentBox->setValue(newParam / 3.0);
+    }
+}
+
+void DetectFoc::ackReceived(QString ackType)
+{
+    if (ackType == "Motor config write OK") {
+        emit configWriteDone(true);
     }
 }
 
@@ -383,6 +412,11 @@ void DetectFoc::on_writeConfigButton_clicked()
 bool DetectFoc::lastOkValuesApplied() const
 {
     return mLastOkValuesApplied;
+}
+
+bool DetectFoc::isRunning() const
+{
+    return mRunning;
 }
 
 bool DetectFoc::allValuesOk() const

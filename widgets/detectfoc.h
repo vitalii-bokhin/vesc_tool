@@ -39,15 +39,26 @@ public:
     void setVesc(VescInterface *vesc);
     bool allValuesOk() const;
     bool lastOkValuesApplied() const;
+    bool isRunning() const;
     void setHideApplyButton(bool hide);
     void setSkipConfirmation(bool skip);
     void setResetBoxValues(bool reset);
+    bool startMeasureRL();
+    bool startMeasureLambda();
+    bool applyAndWriteConfig();
+    void cancelAutomation();
+
+signals:
+    void measureRLDone(bool ok);
+    void measureLambdaDone(bool ok);
+    void configWriteDone(bool ok);
 
 private slots:
     void motorRLReceived(double r, double l, double ld_lq_diff);
     void motorLinkageReceived(double flux_linkage);
     void encoderParamReceived(ENCODER_DETECT_RES res);
     void paramChangedDouble(QObject *src, QString name, double newParam);
+    void ackReceived(QString ackType);
 
     void on_rlButton_clicked();
     void on_lambdaButton_clicked();
