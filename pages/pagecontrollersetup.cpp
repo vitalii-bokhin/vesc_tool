@@ -256,6 +256,27 @@ void PageControllerSetup::runNextStep()
 
     switch (mSetupStep) {
     case StepMeasureRL:
+        ui->runSetupProgressLabel->setText(tr("Measuring R & L..."));
+        break;
+    case StepMeasureLambda:
+        ui->runSetupProgressLabel->setText(tr("Measuring flux linkage..."));
+        break;
+    case StepWriteConfig:
+        ui->runSetupProgressLabel->setText(tr("Writing Motor configuration..."));
+        break;
+    case StepMeasureHall:
+        ui->runSetupProgressLabel->setText(tr("Measuring Hall sensors..."));
+        break;
+    case StepWriteHallConfig:
+        ui->runSetupProgressLabel->setText(tr("Writing Hall configuration..."));
+        break;
+    default:
+        ui->runSetupProgressLabel->setText(QString());
+        break;
+    }
+
+    switch (mSetupStep) {
+    case StepMeasureRL:
         if (!ui->detectFoc->startMeasureRL()) {
             finishSetup(tr("Could not start R & L measurement."), false);
         }
@@ -314,6 +335,7 @@ void PageControllerSetup::finishSetup(const QString &message, bool success)
     ui->detectFoc->cancelAutomation();
     ui->detectFocHall->cancelHallAutomation();
     mSetupStep = StepIdle;
+    ui->runSetupProgressLabel->setText(QString());
     ui->runSetupButton->setText(tr("Run Full Setup"));
 
     for (QPushButton *b : ui->detectFoc->findChildren<QPushButton*>()) {
