@@ -140,6 +140,7 @@ Preferences::Preferences(QWidget *parent) :
     ui->reduceLispBox->setChecked(mSettings.value("reduceLisp", false).toBool());
     ui->replMaxLineBox->setValue(mSettings.value("scripting/replMaxLines", 5000).toInt());
     ui->autoconnectOnAvailableBox->setChecked(mSettings.value("autoconnect_on_available", false).toBool());
+    ui->streamOnConnectBox->setChecked(mSettings.value("PageRtData/streamOnConnect", false).toBool());
 
     saveSettingsChanged();
 }
@@ -477,6 +478,7 @@ void Preferences::saveSettingsChanged()
     mSettings.setValue("reconnectLastCan", ui->reconnectCanBox->isChecked());
     mSettings.setValue("reduceLisp", ui->reduceLispBox->isChecked());
     mSettings.setValue("autoconnect_on_available", ui->autoconnectOnAvailableBox->isChecked());
+    mSettings.setValue("PageRtData/streamOnConnect", ui->streamOnConnectBox->isChecked());
     mSettings.setValue("scripting/replMaxLines", ui->replMaxLineBox->value());
 
     mSettings.sync();
@@ -518,5 +520,11 @@ void Preferences::on_pathLocalLogEdit_textChanged(const QString &arg1)
 void Preferences::on_autoconnectOnAvailableBox_toggled(bool checked)
 {
     mSettings.setValue("autoconnect_on_available", checked);
+    mSettings.sync();
+}
+
+void Preferences::on_streamOnConnectBox_toggled(bool checked)
+{
+    mSettings.setValue("PageRtData/streamOnConnect", checked);
     mSettings.sync();
 }

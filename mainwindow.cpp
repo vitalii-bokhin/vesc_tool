@@ -238,6 +238,13 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(showMessageDialog(QString,QString,bool,bool)));
     connect(mVesc, SIGNAL(serialPortNotWritable(QString)),
             this, SLOT(serialPortNotWritable(QString)));
+    connect(mVesc, &VescInterface::portConnectedChanged, this, [this]() {
+        if (mVesc->isPortConnected() &&
+                mSettings.value("PageRtData/streamOnConnect", false).toBool() &&
+                !ui->actionRtData->isChecked()) {
+            ui->actionRtData->setChecked(true);
+        }
+    });
     connect(mVesc->commands(), SIGNAL(valuesReceived(MC_VALUES,unsigned int)),
             this, SLOT(valuesReceived(MC_VALUES,unsigned int)));
     connect(mVesc->commands(), SIGNAL(mcConfigCheckResult(QStringList)),

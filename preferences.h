@@ -93,6 +93,7 @@ private slots:
     void on_pathLocalLogChooseButton_clicked();
     void on_pathLocalLogEdit_textChanged(const QString &arg1);
     void on_autoconnectOnAvailableBox_toggled(bool checked);
+    void on_streamOnConnectBox_toggled(bool checked);
 
 private:
     Ui::Preferences *ui;
