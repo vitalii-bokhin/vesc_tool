@@ -79,6 +79,10 @@ void PageControllerSetup::setVesc(VescInterface *vesc)
                 this, &PageControllerSetup::lambdaMeasurementDone);
         connect(ui->detectFoc, &DetectFoc::configWriteDone,
                 this, &PageControllerSetup::configWritten);
+        connect(ui->detectFocHall, &DetectFocHall::hallMeasurementDone,
+                this, &PageControllerSetup::hallMeasurementDone);
+        connect(ui->detectFocHall, &DetectFocHall::hallConfigWriteDone,
+                this, &PageControllerSetup::hallConfigWriteDone);
         connect(mVesc, &VescInterface::portConnectedChanged,
                 this, &PageControllerSetup::portConnectedChanged);
 
@@ -185,13 +189,38 @@ void PageControllerSetup::configWritten(bool ok)
 
 void PageControllerSetup::configWriteTimeout()
 {
-    if (mSetupStep != StepWriteConfig) {
+    if (mSetupStep != StepWriteConfig && mSetupStep != StepWriteHallConfig) {
         return;
     }
 
     finishSetup(tr("Full setup stopped: no \"Motor config write OK\" response received."), false);
     QMessageBox::information(this, tr("Full Setup"),
                              tr("Full setup stopped: no \"Motor config write OK\" response received."));
+}
+
+void PageControllerSetup::hallMeasurementDone(bool ok)
+{
+    if (mSetupStep != StepMeasureHall) {
+        return;
+    }
+    if (ok) {
+        runNextStep();
+    } else {
+        finishSetup(tr("Hall measurement failed."), false);
+    }
+}
+
+void PageControllerSetup::hallConfigWriteDone(bool ok)
+{
+    if (mSetupStep != StepWriteHallConfig) {
+        return;
+    }
+    mConfigWriteTimeout.stop();
+    if (ok) {
+        runNextStep();
+    } else {
+        finishSetup(tr("Hall configuration write failed."), false);
+    }
 }
 
 void PageControllerSetup::portConnectedChanged()
@@ -231,6 +260,24 @@ void PageControllerSetup::runNextStep()
         break;
 
     case StepWriteConfig:
+        mLastSetupStep = StepMeasureHall;
+        mSetupStep = StepMeasureHall;
+        if (!ui->detectFocHall->startMeasureHall()) {
+            finishSetup(tr("Could not start Hall measurement."), false);
+        }
+        break;
+
+    case StepMeasureHall:
+        mLastSetupStep = StepWriteHallConfig;
+        mSetupStep = StepWriteHallConfig;
+        if (!ui->detectFocHall->applyAndWriteHallConfig()) {
+            finishSetup(tr("Could not apply and write Hall configuration."), false);
+        } else {
+            mConfigWriteTimeout.start(30000);
+        }
+        break;
+
+    case StepWriteHallConfig:
         mSetupStep = StepDone;
         finishSetup(tr("Full setup completed."), true);
         break;
@@ -243,7 +290,8 @@ void PageControllerSetup::runNextStep()
 void PageControllerSetup::finishSetup(const QString &message, bool success)
 {
     if (!success && mVesc &&
-            (mSetupStep == StepMeasureRL || mSetupStep == StepMeasureLambda)) {
+            (mSetupStep == StepMeasureRL || mSetupStep == StepMeasureLambda ||
+             mSetupStep == StepMeasureHall)) {
         mVesc->commands()->setCurrent(0);
         int estopMs = QSettings().value("estop_ms", 5000).toInt();
         if (estopMs > 0) {
@@ -253,6 +301,7 @@ void PageControllerSetup::finishSetup(const QString &message, bool success)
 
     mConfigWriteTimeout.stop();
     ui->detectFoc->cancelAutomation();
+    ui->detectFocHall->cancelHallAutomation();
     mSetupStep = StepIdle;
     mLastSetupStep = StepIdle;
     ui->runSetupButton->setText(tr("Run Full Setup"));

@@ -38,13 +38,21 @@ public:
     VescInterface *vesc() const;
     void setVesc(VescInterface *vesc);
     bool isRunning() const;
+    bool startMeasureHall();
+    bool applyAndWriteHallConfig();
+    void cancelHallAutomation();
     void setWriteConfigEnabled(bool enabled);
     void setHideApplyButton(bool hide);
     void setSkipConfirmation(bool skip);
     void setResetBoxValues(bool reset);
 
+signals:
+    void hallMeasurementDone(bool ok);
+    void hallConfigWriteDone(bool ok);
+
 private slots:
     void focHallTableReceived(QVector<int> hall_table, int res);
+    void ackReceived(QString ackType);
 
     void on_helpButton_clicked();
     void on_startButton_clicked();

@@ -52,11 +52,13 @@ private slots:
     void lambdaMeasurementDone(bool ok);
     void configWritten(bool ok);
     void configWriteTimeout();
+    void hallMeasurementDone(bool ok);
+    void hallConfigWriteDone(bool ok);
     void portConnectedChanged();
 
 private:
     enum ConfigType { ConfigMotor, ConfigApp };
-    enum SetupStep { StepIdle, StepMeasureRL, StepMeasureLambda, StepWriteConfig, StepDone };
+    enum SetupStep { StepIdle, StepMeasureRL, StepMeasureLambda, StepWriteConfig, StepMeasureHall, StepWriteHallConfig, StepDone };
 
     Ui::PageControllerSetup *ui;
     VescInterface *mVesc;

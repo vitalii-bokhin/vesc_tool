@@ -112,6 +112,23 @@ bool DetectFocHall::isRunning() const
     return mRunning;
 }
 
+bool DetectFocHall::startMeasureHall()
+{
+    on_startButton_clicked();
+    return mRunning;
+}
+
+bool DetectFocHall::applyAndWriteHallConfig()
+{
+    on_writeConfigButton_clicked();
+    return mVesc && mVesc->isPortConnected();
+}
+
+void DetectFocHall::cancelHallAutomation()
+{
+    mRunning = false;
+}
+
 void DetectFocHall::setVesc(VescInterface *vesc)
 {
     mVesc = vesc;
@@ -119,6 +136,8 @@ void DetectFocHall::setVesc(VescInterface *vesc)
     if (mVesc) {
         connect(mVesc->commands(), SIGNAL(focHallTableReceived(QVector<int>,int)),
                 this, SLOT(focHallTableReceived(QVector<int>,int)));
+        connect(mVesc->commands(), SIGNAL(ackReceived(QString)),
+                this, SLOT(ackReceived(QString)));
 
         connect(mVesc, &VescInterface::portConnectedChanged, this, [this]() {
             if (!mVesc->isPortConnected()) {
@@ -151,8 +170,9 @@ void DetectFocHall::setSkipConfirmation(bool skip)
 void DetectFocHall::focHallTableReceived(QVector<int> hall_table, int res)
 {
     mRunning = false;
+    bool err = (res != 0);
 
-    if (res != 0) {
+    if (err) {
         mVesc->emitStatusMessage(tr("Bad FOC Hall Detection Result Received"), false);
     } else {
         mVesc->emitStatusMessage(tr("FOC Hall Result Received"), true);
@@ -164,6 +184,15 @@ void DetectFocHall::focHallTableReceived(QVector<int> hall_table, int res)
         ui->hall5Box->setValue(hall_table.at(5));
         ui->hall6Box->setValue(hall_table.at(6));
         ui->hall7Box->setValue(hall_table.at(7));
+    }
+
+    emit hallMeasurementDone(!err);
+}
+
+void DetectFocHall::ackReceived(QString ackType)
+{
+    if (ackType == "Motor config write OK") {
+        emit hallConfigWriteDone(true);
     }
 }
 
