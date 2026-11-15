@@ -223,7 +223,6 @@ void PageControllerSetup::configWriteTimeout()
     }
 
     finishSetup(msg, false);
-    QMessageBox::information(this, tr("Full Setup"), msg);
 }
 
 void PageControllerSetup::hallMeasurementDone(bool ok)
@@ -371,7 +370,9 @@ void PageControllerSetup::finishSetup(const QString &message, bool success)
     ui->loadMotorConfButton->setEnabled(true);
     ui->loadAppConfButton->setEnabled(true);
 
-    if (mVesc) {
+    if (!success) {
+        QMessageBox::warning(this, tr("Full Setup"), message);
+    } else if (mVesc) {
         mVesc->emitStatusMessage(message, success);
     }
 }
