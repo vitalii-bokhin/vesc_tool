@@ -759,6 +759,9 @@ void MainWindow::dropEvent(QDropEvent *event)
         auto path = url.path();
         if (path.endsWith(".xml", Qt::CaseInsensitive)) {
             if (ConfigParams::testXml(path, "MCConfiguration")) {
+                if (mPageControllerSetup) {
+                    mPageControllerSetup->resetReferenceValues();
+                }
                 mVesc->mcConfig()->loadXml(path, "MCConfiguration");
                 event->acceptProposedAction();
             } else if (ConfigParams::testXml(path, "APPConfiguration")) {
@@ -1227,6 +1230,10 @@ void MainWindow::on_actionLoadMotorConfXml_triggered()
 
     if (path.isNull()) {
         return;
+    }
+
+    if (mPageControllerSetup) {
+        mPageControllerSetup->resetReferenceValues();
     }
 
     bool res = mVesc->mcConfig()->loadXml(path, "MCConfiguration");

@@ -297,6 +297,310 @@
                 </item>
               </layout>
             </item>
+            <item>
+              <widget class="QFrame" name="refWidget">
+                <property name="styleSheet">
+                  <string notr="true">#refWidget { border-top: 1px solid rgba(128, 128, 128, 128); }</string>
+                </property>
+                <layout class="QGridLayout" name="refGridLayout">
+                  <property name="leftMargin">
+                    <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                    <number>6</number>
+                  </property>
+                  <property name="rightMargin">
+                    <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                    <number>0</number>
+                  </property>
+                  <property name="horizontalSpacing">
+                    <number>0</number>
+                  </property>
+                  <item row="0" column="0" colspan="8">
+                    <widget class="QLabel" name="refMinLabel">
+                      <property name="font">
+                        <font>
+                          <pointsize>10</pointsize>
+                        </font>
+                      </property>
+                      <property name="text">
+                        <string>Ref Min</string>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="1" column="0">
+                    <widget class="QSpinBox" name="refMin0Box">
+                      <property name="toolTip">
+                        <string>Hall table 0 reference minimum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="1" column="1">
+                    <widget class="QSpinBox" name="refMin1Box">
+                      <property name="toolTip">
+                        <string>Hall table 1 reference minimum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="1" column="2">
+                    <widget class="QSpinBox" name="refMin2Box">
+                      <property name="toolTip">
+                        <string>Hall table 2 reference minimum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="1" column="3">
+                    <widget class="QSpinBox" name="refMin3Box">
+                      <property name="toolTip">
+                        <string>Hall table 3 reference minimum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="1" column="4">
+                    <widget class="QSpinBox" name="refMin4Box">
+                      <property name="toolTip">
+                        <string>Hall table 4 reference minimum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="1" column="5">
+                    <widget class="QSpinBox" name="refMin5Box">
+                      <property name="toolTip">
+                        <string>Hall table 5 reference minimum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="1" column="6">
+                    <widget class="QSpinBox" name="refMin6Box">
+                      <property name="toolTip">
+                        <string>Hall table 6 reference minimum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="1" column="7">
+                    <widget class="QSpinBox" name="refMin7Box">
+                      <property name="toolTip">
+                        <string>Hall table 7 reference minimum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="2" column="0" colspan="8">
+                    <widget class="QLabel" name="refMaxLabel">
+                      <property name="font">
+                        <font>
+                          <pointsize>10</pointsize>
+                        </font>
+                      </property>
+                      <property name="text">
+                        <string>Ref Max</string>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="3" column="0">
+                    <widget class="QSpinBox" name="refMax0Box">
+                      <property name="toolTip">
+                        <string>Hall table 0 reference maximum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="3" column="1">
+                    <widget class="QSpinBox" name="refMax1Box">
+                      <property name="toolTip">
+                        <string>Hall table 1 reference maximum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="3" column="2">
+                    <widget class="QSpinBox" name="refMax2Box">
+                      <property name="toolTip">
+                        <string>Hall table 2 reference maximum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="3" column="3">
+                    <widget class="QSpinBox" name="refMax3Box">
+                      <property name="toolTip">
+                        <string>Hall table 3 reference maximum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="3" column="4">
+                    <widget class="QSpinBox" name="refMax4Box">
+                      <property name="toolTip">
+                        <string>Hall table 4 reference maximum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="3" column="5">
+                    <widget class="QSpinBox" name="refMax5Box">
+                      <property name="toolTip">
+                        <string>Hall table 5 reference maximum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="3" column="6">
+                    <widget class="QSpinBox" name="refMax6Box">
+                      <property name="toolTip">
+                        <string>Hall table 6 reference maximum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                  <item row="3" column="7">
+                    <widget class="QSpinBox" name="refMax7Box">
+                      <property name="toolTip">
+                        <string>Hall table 7 reference maximum</string>
+                      </property>
+                      <property name="minimum">
+                        <number>-1</number>
+                      </property>
+                      <property name="maximum">
+                        <number>255</number>
+                      </property>
+                      <property name="value">
+                        <number>-1</number>
+                      </property>
+                    </widget>
+                  </item>
+                </layout>
+              </widget>
+            </item>
           </layout>
         </widget>
       </item>

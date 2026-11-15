@@ -45,6 +45,8 @@ public:
     void setHideApplyButton(bool hide);
     void setSkipConfirmation(bool skip);
     void setResetBoxValues(bool reset);
+    void setReferenceMode(bool enabled);
+    void resetReferenceValues();
 
 signals:
     void hallMeasurementDone(bool ok);
@@ -53,6 +55,8 @@ signals:
 private slots:
     void focHallTableReceived(QVector<int> hall_table, int res);
     void ackReceived(QString ackType);
+    void mcParamChangedInt(QObject *src, const QString &name, int newParam);
+    void mcSavingXml();
 
     void on_helpButton_clicked();
     void on_startButton_clicked();
@@ -66,6 +70,8 @@ private:
     bool mSkipConfirmation = false;
     bool resetBoxValues = false;
     void resetValues();
+    void ensureReferenceParams();
+    void loadReferenceValues();
 
 };
 

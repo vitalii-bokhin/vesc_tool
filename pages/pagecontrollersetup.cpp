@@ -69,6 +69,7 @@ void PageControllerSetup::setVesc(VescInterface *vesc)
         ui->detectFocHall->setHideApplyButton(true);
         ui->detectFocHall->setSkipConfirmation(true);
         ui->detectFocHall->setResetBoxValues(true);
+        ui->detectFocHall->setReferenceMode(true);
 
         connect(mVesc->commands(), SIGNAL(valuesReceived(MC_VALUES,uint)),
                 this, SLOT(valuesReceived(MC_VALUES,uint)));
@@ -106,6 +107,13 @@ void PageControllerSetup::reloadParams()
             ui->appGeneralTab->clearParams();
             ui->appGeneralTab->addParamSubgroup(mVesc->appConfig(), "general", "general");
         }
+    }
+}
+
+void PageControllerSetup::resetReferenceValues()
+{
+    if (mVesc && ui->detectFocHall) {
+        ui->detectFocHall->resetReferenceValues();
     }
 }
 
@@ -551,6 +559,8 @@ void PageControllerSetup::loadMotorConfig(const QString &path)
                              tr("Not connected to the VESC."));
         return;
     }
+
+    resetReferenceValues();
 
     bool res = mVesc->mcConfig()->loadXml(path, "MCConfiguration");
 

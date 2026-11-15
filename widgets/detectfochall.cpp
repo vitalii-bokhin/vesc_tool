@@ -39,6 +39,8 @@ DetectFocHall::DetectFocHall(QWidget *parent) :
 
     layout()->setContentsMargins(0, 0, 0, 0);
     mVesc = nullptr;
+
+    setReferenceMode(false);
 }
 
 DetectFocHall::~DetectFocHall()
@@ -139,12 +141,21 @@ void DetectFocHall::setVesc(VescInterface *vesc)
         connect(mVesc->commands(), SIGNAL(ackReceived(QString)),
                 this, SLOT(ackReceived(QString)));
 
+        connect(mVesc->mcConfig(), &ConfigParams::paramChangedInt,
+                this, &DetectFocHall::mcParamChangedInt);
+        connect(mVesc->mcConfig(), &ConfigParams::savingXml,
+                this, &DetectFocHall::mcSavingXml);
+        connect(mVesc, &VescInterface::configurationChanged,
+                this, [this]() { ensureReferenceParams(); });
+
         connect(mVesc, &VescInterface::portConnectedChanged, this, [this]() {
             if (!mVesc->isPortConnected()) {
                 mRunning = false;
                 resetValues();
             }
         });
+
+        ensureReferenceParams();
     }
 }
 
@@ -199,6 +210,147 @@ void DetectFocHall::ackReceived(QString ackType)
 void DetectFocHall::setResetBoxValues(bool reset)
 {
     resetBoxValues = reset;
+}
+
+void DetectFocHall::setReferenceMode(bool enabled)
+{
+    ui->refWidget->setVisible(enabled);
+}
+
+void DetectFocHall::ensureReferenceParams()
+{
+    if (!mVesc) {
+        return;
+    }
+
+    ConfigParams *mc = mVesc->mcConfig();
+    if (!mc) {
+        return;
+    }
+
+    for (int i = 0; i < 8; ++i) {
+        ConfigParam minParam;
+        minParam.setInt(-1, 255, -1, 1);
+        minParam.longName = QString("Hall Table %1 Reference Min").arg(i);
+        minParam.transmittable = false;
+        QString minName = QString("foc_hall_table_ref_min__%1").arg(i);
+        if (!mc->hasParam(minName)) {
+            mc->addParam(minName, minParam);
+        }
+
+        ConfigParam maxParam;
+        maxParam.setInt(-1, 255, -1, 1);
+        maxParam.longName = QString("Hall Table %1 Reference Max").arg(i);
+        maxParam.transmittable = false;
+        QString maxName = QString("foc_hall_table_ref_max__%1").arg(i);
+        if (!mc->hasParam(maxName)) {
+            mc->addParam(maxName, maxParam);
+        }
+    }
+
+    loadReferenceValues();
+}
+
+void DetectFocHall::loadReferenceValues()
+{
+    if (!mVesc) {
+        return;
+    }
+
+    ConfigParams *mc = mVesc->mcConfig();
+    if (!mc) {
+        return;
+    }
+
+    for (int i = 0; i < 8; ++i) {
+        QSpinBox *minBox = findChild<QSpinBox*>(QString("refMin%1Box").arg(i));
+        QSpinBox *maxBox = findChild<QSpinBox*>(QString("refMax%1Box").arg(i));
+
+        if (minBox) {
+            minBox->setValue(mc->getParamInt(QString("foc_hall_table_ref_min__%1").arg(i)));
+        }
+        if (maxBox) {
+            maxBox->setValue(mc->getParamInt(QString("foc_hall_table_ref_max__%1").arg(i)));
+        }
+    }
+}
+
+void DetectFocHall::mcParamChangedInt(QObject *src, const QString &name, int newParam)
+{
+    if (src == this || !mVesc) {
+        return;
+    }
+
+    int index = -1;
+    QString prefix;
+
+    if (name.startsWith("foc_hall_table_ref_min__")) {
+        prefix = "refMin";
+        index = name.mid(24).toInt();
+    } else if (name.startsWith("foc_hall_table_ref_max__")) {
+        prefix = "refMax";
+        index = name.mid(24).toInt();
+    }
+
+    if (index < 0 || index > 7) {
+        return;
+    }
+
+    QSpinBox *box = findChild<QSpinBox*>(QString("%1%2Box").arg(prefix).arg(index));
+    if (box) {
+        box->setValue(newParam);
+    }
+}
+
+void DetectFocHall::mcSavingXml()
+{
+    if (!mVesc) {
+        return;
+    }
+
+    ConfigParams *mc = mVesc->mcConfig();
+    if (!mc) {
+        return;
+    }
+
+    for (int i = 0; i < 8; ++i) {
+        QSpinBox *minBox = findChild<QSpinBox*>(QString("refMin%1Box").arg(i));
+        QSpinBox *maxBox = findChild<QSpinBox*>(QString("refMax%1Box").arg(i));
+
+        if (minBox) {
+            mc->updateParamInt(QString("foc_hall_table_ref_min__%1").arg(i), minBox->value(), this);
+        }
+        if (maxBox) {
+            mc->updateParamInt(QString("foc_hall_table_ref_max__%1").arg(i), maxBox->value(), this);
+        }
+    }
+}
+
+void DetectFocHall::resetReferenceValues()
+{
+    if (!mVesc) {
+        return;
+    }
+
+    ConfigParams *mc = mVesc->mcConfig();
+    if (!mc) {
+        return;
+    }
+
+    for (int i = 0; i < 8; ++i) {
+        mc->updateParamInt(QString("foc_hall_table_ref_min__%1").arg(i), -1, this);
+        mc->updateParamInt(QString("foc_hall_table_ref_max__%1").arg(i), -1, this);
+
+        QSpinBox *minBox = findChild<QSpinBox*>(QString("refMin%1Box").arg(i));
+        QSpinBox *maxBox = findChild<QSpinBox*>(QString("refMax%1Box").arg(i));
+
+        if (minBox) {
+            minBox->setValue(-1);
+        }
+        if (maxBox) {
+            maxBox->setValue(-1);
+        }
+    }
 }
 
 void DetectFocHall::resetValues()
