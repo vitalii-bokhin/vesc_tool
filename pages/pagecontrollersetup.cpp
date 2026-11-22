@@ -125,17 +125,7 @@ void PageControllerSetup::valuesReceived(MC_VALUES values, unsigned int mask)
 void PageControllerSetup::on_runSetupButton_clicked()
 {
     if (mSetupStep != StepIdle) {
-        QMessageBox::StandardButton answer = QMessageBox::question(
-                    this,
-                    tr("Full Setup"),
-                    tr("Abort the running full setup?"),
-                    QMessageBox::Ok | QMessageBox::Cancel,
-                    QMessageBox::Cancel
-                    );
-
-        if (answer == QMessageBox::Ok && mSetupStep != StepIdle) {
-            finishSetup(tr("Full setup aborted."), false);
-        }
+        finishSetup(tr("Full setup aborted."), false, false);
         return;
     }
 
@@ -420,11 +410,9 @@ void PageControllerSetup::runNextStep()
     }
 }
 
-void PageControllerSetup::finishSetup(const QString &message, bool success)
+void PageControllerSetup::finishSetup(const QString &message, bool success, bool showMessageBox)
 {
-    if (!success && mVesc &&
-            (mSetupStep == StepMeasureRL || mSetupStep == StepMeasureLambda ||
-             mSetupStep == StepMeasureHall)) {
+    if (mVesc) {
         mVesc->commands()->setCurrent(0);
         int estopMs = QSettings().value("estop_ms", 5000).toInt();
         if (estopMs > 0) {
@@ -450,7 +438,7 @@ void PageControllerSetup::finishSetup(const QString &message, bool success)
     ui->loadMotorConfButton->setEnabled(true);
     ui->loadAppConfButton->setEnabled(true);
 
-    if (!success) {
+    if (!success && showMessageBox) {
         QMessageBox::warning(this, tr("Full Setup"), message);
     } else if (mVesc) {
         mVesc->emitStatusMessage(message, success);

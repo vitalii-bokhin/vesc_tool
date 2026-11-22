@@ -81,7 +81,7 @@ private:
     void loadAppConfig(const QString &path);
     static SetupStep nextSetupStep(SetupStep s);
     void runNextStep();
-    void finishSetup(const QString &message, bool success);
+    void finishSetup(const QString &message, bool success, bool showMessageBox = true);
 };
 
 #endif // PAGECONTROLLERSETUP_H
