@@ -267,7 +267,8 @@ void PageControllerSetup::on_saveMotorConfigXmlButton_clicked()
         return;
     }
 
-    QString fileName = ui->saveMotorConfigXmlPathEdit->text().trimmed();
+    QString prefix = ui->saveMotorConfigXmlPrefixEdit->text().trimmed();
+    QString fileName = prefix + ui->saveMotorConfigXmlPathEdit->text().trimmed();
     if (fileName.isEmpty()) {
         QMessageBox::warning(this, tr("Save Motor Configuration"),
                              tr("File name is empty."));
