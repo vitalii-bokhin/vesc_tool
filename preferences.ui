@@ -467,6 +467,48 @@
            </property>
           </widget>
          </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="labelMotorConfigXml">
+           <property name="text">
+            <string>Motor Config output dir</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="pathMotorConfigXmlEdit">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="2">
+          <widget class="QPushButton" name="pathMotorConfigXmlChooseButton">
+           <property name="toolTip">
+            <string>Choose output directory</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="res.qrc">
+             <normaloff>:/res/icons/Open Folder-96.png</normaloff>:/res/icons/Open Folder-96.png</iconset>
+           </property>
+          </widget>
+         </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="labelFilenameSuffixes">
+            <property name="text">
+             <string>Filename suffixes</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QLineEdit" name="pathFilenameSuffixesEdit">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
         </layout>
        </item>
        <item>

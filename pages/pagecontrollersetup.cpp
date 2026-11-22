@@ -26,6 +26,7 @@
 #include <QPushButton>
 #include <QFileInfo>
 #include <QVBoxLayout>
+#include <QDir>
 
 PageControllerSetup::PageControllerSetup(QWidget *parent) :
     QWidget(parent),
@@ -42,6 +43,12 @@ PageControllerSetup::PageControllerSetup(QWidget *parent) :
     loadConfigHistory();
     updateHistoryButtons(ConfigMotor);
     updateHistoryButtons(ConfigApp);
+
+    ui->saveMotorConfigXmlSuffixCombo->addItem(QString());
+    QString suffixes = QSettings().value("path_filename_suffixes", ".xml").toString();
+    for (const QString &s : suffixes.split(',')) {
+        ui->saveMotorConfigXmlSuffixCombo->addItem(s.trimmed());
+    }
 }
 
 PageControllerSetup::~PageControllerSetup()
@@ -254,6 +261,79 @@ void PageControllerSetup::portConnectedChanged()
 {
     if (mVesc && !mVesc->isPortConnected() && mSetupStep != StepIdle) {
         finishSetup(tr("Full setup aborted: connection lost."), false);
+    }
+
+    if (mVesc && !mVesc->isPortConnected()) {
+        ui->saveMotorConfigXmlPathEdit->clear();
+        ui->saveMotorConfigXmlSuffixCombo->setCurrentIndex(0);
+    }
+}
+
+void PageControllerSetup::on_saveMotorConfigXmlButton_clicked()
+{
+    if (!mVesc) {
+        QMessageBox::warning(this, tr("Save Motor Configuration"),
+                             tr("Not connected to the VESC."));
+        return;
+    }
+
+    QString fileName = ui->saveMotorConfigXmlPathEdit->text().trimmed();
+    if (fileName.isEmpty()) {
+        QMessageBox::warning(this, tr("Save Motor Configuration"),
+                             tr("File name is empty."));
+        return;
+    }
+
+    QString suffix = ui->saveMotorConfigXmlSuffixCombo->currentText();
+    fileName += suffix;
+
+    if (!fileName.toLower().endsWith(".xml")) {
+        fileName += ".xml";
+    }
+
+    QSettings settings;
+    QString dirPath = settings.value("path_motor_config_xml").toString();
+    if (dirPath.isEmpty()) {
+        QMessageBox::warning(this, tr("Save Motor Configuration"),
+                             tr("Output directory is not set in Preferences → Paths."));
+        return;
+    }
+
+    QDir dir(dirPath);
+    if (!dir.exists()) {
+        QMessageBox::warning(this, tr("Save Motor Configuration"),
+                             tr("Output directory does not exist:<BR>%1").arg(dirPath));
+        return;
+    }
+    QFileInfo dirInfo(dirPath);
+    if (!dirInfo.isWritable()) {
+        QMessageBox::warning(this, tr("Save Motor Configuration"),
+                             tr("Output directory is not writable:<BR>%1").arg(dirPath));
+        return;
+    }
+
+    QString fullPath = dir.absoluteFilePath(fileName);
+
+    if (QFileInfo::exists(fullPath)) {
+        QMessageBox::StandardButton answer = QMessageBox::question(
+                    this,
+                    tr("Save Motor Configuration"),
+                    tr("File already exists. Overwrite:<BR>%1").arg(fullPath),
+                    QMessageBox::Ok | QMessageBox::Cancel,
+                    QMessageBox::Cancel);
+        if (answer != QMessageBox::Ok) {
+            return;
+        }
+    }
+
+    bool res = mVesc->mcConfig()->saveXml(fullPath, "MCConfiguration");
+
+    if (res) {
+        mVesc->emitStatusMessage(tr("Motor configuration saved to %1").arg(fullPath), true);
+    } else {
+        QMessageBox::warning(this, tr("Save Motor Configuration"),
+                             tr("Could not save motor configuration:<BR>"
+                                "%1").arg(mVesc->mcConfig()->xmlStatus()));
     }
 }
 

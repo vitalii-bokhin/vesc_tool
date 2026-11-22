@@ -55,6 +55,7 @@ private slots:
     void hallMeasurementDone(bool ok);
     void hallConfigWriteDone(bool ok);
     void portConnectedChanged();
+    void on_saveMotorConfigXmlButton_clicked();
 
 private:
     enum ConfigType { ConfigMotor, ConfigApp };

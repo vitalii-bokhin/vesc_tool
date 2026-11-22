@@ -44,6 +44,9 @@
               </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
+              <property name="bottomMargin">
+                <number>30</number>
+              </property>
               <item>
                 <widget class="TempGauge" name="tempGauge" native="true"/>
               </item>
@@ -139,6 +142,25 @@
                 </layout>
               </item>
               <item>
+                <widget class="QLabel" name="spacerFullSetup">
+                  <property name="text">
+                    <string/>
+                  </property>
+                  <property name="maximumSize">
+                    <size>
+                      <width>16777215</width>
+                      <height>20</height>
+                    </size>
+                  </property>
+                  <property name="minimumSize">
+                    <size>
+                      <width>0</width>
+                      <height>20</height>
+                    </size>
+                  </property>
+                </widget>
+              </item>
+              <item>
                 <widget class="QLabel" name="labelFullSetup">
                   <property name="text">
                     <string>Full Configuration Setup</string>
@@ -189,6 +211,25 @@
                 </layout>
               </item>
               <item>
+                <widget class="QLabel" name="spacerFocGeneral">
+                  <property name="text">
+                    <string/>
+                  </property>
+                  <property name="maximumSize">
+                    <size>
+                      <width>16777215</width>
+                      <height>20</height>
+                    </size>
+                  </property>
+                  <property name="minimumSize">
+                    <size>
+                      <width>0</width>
+                      <height>20</height>
+                    </size>
+                  </property>
+                </widget>
+              </item>
+              <item>
                 <widget class="QLabel" name="labelFocGeneral">
                   <property name="text">
                     <string>FOC Motor Configuration</string>
@@ -228,6 +269,25 @@
                 <widget class="DetectFoc" name="detectFoc" native="true"/>
               </item>
               <item>
+                <widget class="QLabel" name="spacerFocHall">
+                  <property name="text">
+                    <string/>
+                  </property>
+                  <property name="maximumSize">
+                    <size>
+                      <width>16777215</width>
+                      <height>20</height>
+                    </size>
+                  </property>
+                  <property name="minimumSize">
+                    <size>
+                      <width>0</width>
+                      <height>20</height>
+                    </size>
+                  </property>
+                </widget>
+              </item>
+              <item>
                 <widget class="QLabel" name="labelFocHall">
                   <property name="text">
                     <string>FOC Hall Sensors</string>
@@ -261,17 +321,23 @@
                 <widget class="DetectFocHall" name="detectFocHall" native="true"/>
               </item>
               <item>
-                <spacer name="verticalSpacer">
-                  <property name="orientation">
-                    <enum>Qt::Vertical</enum>
+                <widget class="QLabel" name="spacerAppSettings">
+                  <property name="text">
+                    <string/>
                   </property>
-                  <property name="sizeHint" stdset="0">
+                  <property name="maximumSize">
                     <size>
-                      <width>20</width>
-                      <height>40</height>
+                      <width>16777215</width>
+                      <height>20</height>
                     </size>
                   </property>
-                </spacer>
+                  <property name="minimumSize">
+                    <size>
+                      <width>0</width>
+                      <height>20</height>
+                    </size>
+                  </property>
+                </widget>
               </item>
               <item>
                 <widget class="QLabel" name="labelAppSettings">
@@ -308,6 +374,69 @@
                     </size>
                   </property>
                 </widget>
+              </item>
+              <item>
+                <widget class="QLabel" name="spacerSaveMotorConfigXml">
+                  <property name="text">
+                    <string/>
+                  </property>
+                  <property name="maximumSize">
+                    <size>
+                      <width>16777215</width>
+                      <height>20</height>
+                    </size>
+                  </property>
+                  <property name="minimumSize">
+                    <size>
+                      <width>0</width>
+                      <height>20</height>
+                    </size>
+                  </property>
+                </widget>
+              </item>
+              <item>
+                <widget class="QLabel" name="labelSaveMotorConfigXml">
+                  <property name="text">
+                    <string>Save motor config XML</string>
+                  </property>
+                  <property name="font">
+                    <font>
+                      <pointsize>12</pointsize>
+                      <weight>75</weight>
+                      <bold>true</bold>
+                    </font>
+                  </property>
+                </widget>
+              </item>
+              <item>
+                <layout class="QHBoxLayout" name="saveMotorConfigXmlRowLayout">
+                  <item>
+                    <widget class="QLineEdit" name="saveMotorConfigXmlPathEdit"/>
+                  </item>
+                  <item>
+                    <widget class="QComboBox" name="saveMotorConfigXmlSuffixCombo">
+                      <property name="minimumSize">
+                        <size>
+                          <width>150</width>
+                          <height>0</height>
+                        </size>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <widget class="QPushButton" name="saveMotorConfigXmlButton">
+                      <property name="text">
+                        <string>Save config XML</string>
+                      </property>
+                      <property name="minimumSize">
+                        <size>
+                          <width>200</width>
+                          <height>0</height>
+                        </size>
+                      </property>
+                    </widget>
+                  </item>
+                </layout>
               </item>
             </layout>
           </widget>

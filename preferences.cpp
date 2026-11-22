@@ -54,6 +54,7 @@ Preferences::Preferences(QWidget *parent) :
     ui->jsScanButton->setIcon(Utility::getIcon("icons/Connected-96.png"));
     ui->jsResetConfigButton->setIcon(Utility::getIcon("icons/Restart-96.png"));
     ui->pathLocalLogChooseButton->setIcon(Utility::getIcon("icons/Open Folder-96.png"));
+    ui->pathMotorConfigXmlChooseButton->setIcon(Utility::getIcon("icons/Open Folder-96.png"));
 
     ui->uiScaleBox->setValue(mSettings.value("app_scale_factor", 1.0).toDouble());
     ui->uiPlotWidthBox->setValue(mSettings.value("plot_line_width",4.0).toDouble());
@@ -61,6 +62,8 @@ Preferences::Preferences(QWidget *parent) :
     ui->pathScriptInputEdit->setText(mSettings.value("path_script_input", "./log").toString());
     ui->pathScriptOutputEdit->setText(mSettings.value("path_script_output", "./log").toString());
     ui->pathLocalLogEdit->setText(mSettings.value("path_local_log", "./log_local").toString());
+    ui->pathMotorConfigXmlEdit->setText(mSettings.value("path_motor_config_xml", "./log").toString());
+    ui->pathFilenameSuffixesEdit->setText(mSettings.value("path_filename_suffixes", "xml").toString());
     ui->pollRtDataBox->setValue(mSettings.value("poll_rate_rt_data", 50.0).toDouble());
     ui->pollAppDataBox->setValue(mSettings.value("poll_rate_app_data", 20.0).toDouble());
     ui->pollImuDataBox->setValue(mSettings.value("poll_rate_imu_data", 50.0).toDouble());
@@ -514,6 +517,24 @@ void Preferences::on_pathLocalLogChooseButton_clicked()
 void Preferences::on_pathLocalLogEdit_textChanged(const QString &arg1)
 {
     mSettings.setValue("path_local_log", arg1);
+    mSettings.sync();
+}
+
+void Preferences::on_pathMotorConfigXmlChooseButton_clicked()
+{
+    ui->pathMotorConfigXmlEdit->setText(
+                QFileDialog::getExistingDirectory(this, "Choose motor config XML output directory"));
+}
+
+void Preferences::on_pathMotorConfigXmlEdit_textChanged(const QString &arg1)
+{
+    mSettings.setValue("path_motor_config_xml", arg1);
+    mSettings.sync();
+}
+
+void Preferences::on_pathFilenameSuffixesEdit_textChanged(const QString &arg1)
+{
+    mSettings.setValue("path_filename_suffixes", arg1);
     mSettings.sync();
 }
 

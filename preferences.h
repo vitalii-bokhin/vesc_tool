@@ -92,6 +92,9 @@ private slots:
     void on_estopTimeBox_valueChanged(int arg1);
     void on_pathLocalLogChooseButton_clicked();
     void on_pathLocalLogEdit_textChanged(const QString &arg1);
+    void on_pathMotorConfigXmlChooseButton_clicked();
+    void on_pathMotorConfigXmlEdit_textChanged(const QString &arg1);
+    void on_pathFilenameSuffixesEdit_textChanged(const QString &arg1);
     void on_autoconnectOnAvailableBox_toggled(bool checked);
     void on_streamOnConnectBox_toggled(bool checked);
 
