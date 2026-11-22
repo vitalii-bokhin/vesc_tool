@@ -27,6 +27,7 @@
 #include <QFileInfo>
 #include <QVBoxLayout>
 #include <QDir>
+#include <QVector>
 
 PageControllerSetup::PageControllerSetup(QWidget *parent) :
     QWidget(parent),
@@ -93,9 +94,13 @@ void PageControllerSetup::setVesc(VescInterface *vesc)
         connect(mVesc, &VescInterface::portConnectedChanged,
                 this, &PageControllerSetup::portConnectedChanged);
 
+        connect(mVesc->mcConfig(), &ConfigParams::paramChangedInt,
+                this, &PageControllerSetup::updateHallChart);
+
         // Request initial values to display temperatures
         mVesc->commands()->getValues();
         reloadParams();
+        updateHallChart();
     }
 }
 
@@ -232,6 +237,8 @@ void PageControllerSetup::hallMeasurementDone(bool ok)
     } else {
         finishSetup(tr("Hall measurement failed."), false);
     }
+
+    updateHallChart();
 }
 
 void PageControllerSetup::hallConfigWriteDone(bool ok)
@@ -651,4 +658,19 @@ void PageControllerSetup::loadAppConfig(const QString &path)
                              tr("Could not load app configuration:<BR>"
                                 "%1").arg(mVesc->appConfig()->xmlStatus()));
     }
+}
+
+void PageControllerSetup::updateHallChart()
+{
+    if (!mVesc || !ui->hallChart) {
+        return;
+    }
+
+    ConfigParams *mcConfig = mVesc->mcConfig();
+    QVector<int> blueValues;
+    for (int i = 0; i < 8; ++i) {
+        blueValues.append(mcConfig->getParamInt(QString("foc_hall_table__%1").arg(i)));
+    }
+    ui->hallChart->setBlueValues(blueValues);
+    ui->hallChart->setYellowValues(ui->detectFocHall->hallTableValues());
 }

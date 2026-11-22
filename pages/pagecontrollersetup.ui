@@ -302,20 +302,34 @@
                 </widget>
               </item>
               <item>
-                <widget class="ParamTable" name="hallTab">
-                  <property name="minimumSize">
-                    <size>
-                      <width>0</width>
-                      <height>380</height>
-                    </size>
-                  </property>
-                  <property name="maximumSize">
-                    <size>
-                      <width>580</width>
-                      <height>380</height>
-                    </size>
-                  </property>
-                </widget>
+                <layout class="QHBoxLayout" name="hallChartRowLayout">
+                  <item>
+                    <widget class="ParamTable" name="hallTab">
+                      <property name="minimumSize">
+                        <size>
+                          <width>0</width>
+                          <height>380</height>
+                        </size>
+                      </property>
+                      <property name="maximumSize">
+                        <size>
+                          <width>580</width>
+                          <height>380</height>
+                        </size>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <widget class="HallChart" name="hallChart" native="true">
+                      <property name="maximumSize">
+                        <size>
+                          <width>200</width>
+                          <height>200</height>
+                        </size>
+                      </property>
+                    </widget>
+                  </item>
+                </layout>
               </item>
               <item>
                 <widget class="DetectFocHall" name="detectFocHall" native="true"/>
@@ -469,6 +483,11 @@
       <class>TempGauge</class>
       <extends>QWidget</extends>
       <header>widgets/tempgauge.h</header>
+    </customwidget>
+    <customwidget>
+      <class>HallChart</class>
+      <extends>QWidget</extends>
+      <header>widgets/hallchart.h</header>
     </customwidget>
   </customwidgets>
   <resources>

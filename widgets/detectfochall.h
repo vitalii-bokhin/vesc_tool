@@ -45,6 +45,7 @@ public:
     void setHideApplyButton(bool hide);
     void setSkipConfirmation(bool skip);
     void setResetBoxValues(bool reset);
+    QVector<int> hallTableValues() const;
 
 signals:
     void hallMeasurementDone(bool ok);

@@ -33,6 +33,7 @@ HEADERS += \
     $$PWD/displaybar.h \
     $$PWD/displaypercentage.h \
     $$PWD/helpdialog.h \
+    $$PWD/hallchart.h \
     $$PWD/mrichtextedit.h \
     $$PWD/mtextedit.h \
     $$PWD/pagelistitem.h \
@@ -97,5 +98,6 @@ SOURCES += \
     $$PWD/dirsetup.cpp \
     $$PWD/vesc3dview.cpp \
     $$PWD/superslider.cpp \
-    $$PWD/tempgauge.cpp
+    $$PWD/tempgauge.cpp \
+    $$PWD/hallchart.cpp
 

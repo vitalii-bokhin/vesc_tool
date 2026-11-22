@@ -23,6 +23,7 @@
 #include <QWidget>
 #include <QTimer>
 #include "vescinterface.h"
+#include "widgets/hallchart.h"
 
 class QVBoxLayout;
 
@@ -55,6 +56,7 @@ private slots:
     void hallMeasurementDone(bool ok);
     void hallConfigWriteDone(bool ok);
     void portConnectedChanged();
+    void updateHallChart();
     void on_saveMotorConfigXmlButton_clicked();
 
 private:

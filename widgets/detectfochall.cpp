@@ -201,6 +201,20 @@ void DetectFocHall::setResetBoxValues(bool reset)
     resetBoxValues = reset;
 }
 
+QVector<int> DetectFocHall::hallTableValues() const
+{
+    QVector<int> values;
+    values.append(ui->hall0Box->value());
+    values.append(ui->hall1Box->value());
+    values.append(ui->hall2Box->value());
+    values.append(ui->hall3Box->value());
+    values.append(ui->hall4Box->value());
+    values.append(ui->hall5Box->value());
+    values.append(ui->hall6Box->value());
+    values.append(ui->hall7Box->value());
+    return values;
+}
+
 void DetectFocHall::resetValues()
 {
     if (resetBoxValues) {
