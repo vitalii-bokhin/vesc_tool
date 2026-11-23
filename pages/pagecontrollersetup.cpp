@@ -669,10 +669,10 @@ void PageControllerSetup::updateHallChart()
     }
 
     ConfigParams *mcConfig = mVesc->mcConfig();
-    QVector<int> blueValues;
+    QVector<int> hallTabValues;
     for (int i = 0; i < 8; ++i) {
-        blueValues.append(mcConfig->getParamInt(QString("foc_hall_table__%1").arg(i)));
+        hallTabValues.append(mcConfig->getParamInt(QString("foc_hall_table__%1").arg(i)));
     }
-    ui->hallChart->setBlueValues(blueValues);
-    ui->hallChart->setYellowValues(ui->detectFocHall->hallTableValues());
+    ui->hallChart->setHallTabValues(hallTabValues);
+    ui->hallChart->setDetectFocHallValues(ui->detectFocHall->hallTableValues());
 }

@@ -1,4 +1,5 @@
 #include "hallchart.h"
+#include "utility.h"
 #include <QPainter>
 #include <QPaintEvent>
 #include <QFont>
@@ -9,8 +10,8 @@ const int HallChart::Radius;
 
 HallChart::HallChart(QWidget *parent) : QWidget(parent)
 {
-    mYellowValues.fill(0, 8);
-    mBlueValues.fill(0, 8);
+    mHallTabValues.fill(0, 8);
+    mDetectFocHallValues.fill(0, 8);
     setMinimumSize(Diameter, Diameter);
 }
 
@@ -23,15 +24,15 @@ QSize HallChart::sizeHint() const
     return QSize(Diameter, Diameter);
 }
 
-void HallChart::setYellowValues(const QVector<int> &values)
+void HallChart::setHallTabValues(const QVector<int> &values)
 {
-    mYellowValues = values;
+    mHallTabValues = values;
     update();
 }
 
-void HallChart::setBlueValues(const QVector<int> &values)
+void HallChart::setDetectFocHallValues(const QVector<int> &values)
 {
-    mBlueValues = values;
+    mDetectFocHallValues = values;
     update();
 }
 
@@ -45,11 +46,11 @@ void HallChart::paintEvent(QPaintEvent *event)
 
     // Circle with diameter 200 x 200 px
     QRect circleRect(cx - Radius, cy - Radius, Diameter, Diameter);
-    painter.setPen(QPen(Qt::gray, 1));
+    painter.setPen(QPen(QColor(100, 100, 100), 1));
     painter.drawEllipse(circleRect);
 
     // Horizontal and vertical axes through the center
-    painter.setPen(QPen(Qt::gray, 1));
+    painter.setPen(QPen(QColor(100, 100, 100), 1));
     painter.drawLine(cx - Radius, cy, cx + Radius, cy);
     painter.drawLine(cx, cy - Radius, cy, cy + Radius);
 
@@ -82,14 +83,14 @@ void HallChart::paintEvent(QPaintEvent *event)
         painter.drawLine(cx, cy, ex, ey);
     };
 
-    // Blue vectors (hallTab) - reach the circle
-    for (int i = 0; i < mBlueValues.size(); ++i) {
-        drawVector(mBlueValues.at(i), Qt::blue, Radius);
+    // Blue vectors (hallTab table) - reach the circle
+    for (int i = 0; i < mHallTabValues.size(); ++i) {
+        drawVector(mHallTabValues.at(i), Utility::getAppQColor("plot_graph1"), Radius);
     }
 
-    // Yellow vectors (detectFocHall) - shorter, inside the blue ones,
+    // Green vectors (detect foc hall) - shorter, inside the blue ones,
     // so both series remain distinguishable when they overlap
-    for (int i = 0; i < mYellowValues.size(); ++i) {
-        drawVector(mYellowValues.at(i), QColor(255, 215, 0), Radius - 30);
+    for (int i = 0; i < mDetectFocHallValues.size(); ++i) {
+        drawVector(mDetectFocHallValues.at(i), Utility::getAppQColor("green"), Radius - 40);
     }
 }

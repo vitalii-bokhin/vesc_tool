@@ -12,16 +12,16 @@ public:
     explicit HallChart(QWidget *parent = nullptr);
     ~HallChart();
 
-    void setYellowValues(const QVector<int> &values);  // detectFocHall
-    void setBlueValues(const QVector<int> &values);    // hallTab
+    void setHallTabValues(const QVector<int> &values);    // hall sensors table
+    void setDetectFocHallValues(const QVector<int> &values);  // detect foc hall
     QSize sizeHint() const override;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
-    QVector<int> mYellowValues;
-    QVector<int> mBlueValues;
+    QVector<int> mHallTabValues;
+    QVector<int> mDetectFocHallValues;
     static const int Diameter = 200;
     static const int Radius = 100;
 };
