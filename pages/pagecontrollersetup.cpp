@@ -91,6 +91,8 @@ void PageControllerSetup::setVesc(VescInterface *vesc)
                 this, &PageControllerSetup::hallMeasurementDone);
         connect(ui->detectFocHall, &DetectFocHall::hallConfigWriteDone,
                 this, &PageControllerSetup::hallConfigWriteDone);
+        connect(ui->detectFocHall, &DetectFocHall::hallTableValuesChanged,
+                this, &PageControllerSetup::updateHallChart);
         connect(mVesc, &VescInterface::portConnectedChanged,
                 this, &PageControllerSetup::portConnectedChanged);
 

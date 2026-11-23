@@ -186,6 +186,7 @@ void DetectFocHall::focHallTableReceived(QVector<int> hall_table, int res)
         ui->hall7Box->setValue(hall_table.at(7));
     }
 
+    emit hallTableValuesChanged();
     emit hallMeasurementDone(!err);
 }
 

@@ -50,6 +50,7 @@ public:
 signals:
     void hallMeasurementDone(bool ok);
     void hallConfigWriteDone(bool ok);
+    void hallTableValuesChanged();
 
 private slots:
     void focHallTableReceived(QVector<int> hall_table, int res);
